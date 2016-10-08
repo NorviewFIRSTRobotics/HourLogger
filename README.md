@@ -1,0 +1,2 @@
+# HourLogger
+logs hours
