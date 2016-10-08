@@ -2,8 +2,6 @@ package team1793;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import team1793.data.Day;
-import team1793.data.Member;
 
 import java.io.File;
 import java.io.FileWriter;

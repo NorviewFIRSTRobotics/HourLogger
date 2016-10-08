@@ -1,4 +1,4 @@
-package team1793.swing;
+package team1793;
 
 import javax.swing.*;
 import java.awt.*;

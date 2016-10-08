@@ -1,4 +1,4 @@
-package team1793.swing;
+package team1793;
 
 /**
  * Created by tyler on 10/7/16.

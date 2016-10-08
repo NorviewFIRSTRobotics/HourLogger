@@ -1,7 +1,4 @@
-package team1793.data;
-
-import team1793.HourLogger;
-import team1793.TimeUtil;
+package team1793;
 
 import java.util.HashMap;
 

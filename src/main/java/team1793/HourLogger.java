@@ -1,8 +1,5 @@
 package team1793;
 
-import team1793.data.Member;
-import team1793.swing.Menu;
-
 import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
