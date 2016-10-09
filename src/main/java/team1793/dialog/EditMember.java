@@ -1,7 +1,7 @@
 package team1793.dialog;
 
 import team1793.HourLogger;
-import team1793.Member;
+import team1793.data.Member;
 
 import javax.swing.*;
 

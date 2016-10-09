@@ -1,7 +1,7 @@
 package team1793.dialog;
 
 import team1793.HourLogger;
-import team1793.Member;
+import team1793.data.Member;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -49,11 +49,18 @@ public class AddMember extends JDialog {
         setVisible(true);
     }
 
-    private void onOK() {
-        Member member = new Member(firstName.getText().trim(),lastName.getText().trim());
-        member.sync();
+    public static void addMember(String firstName, String lastName) {
+        if(HourLogger.getMemberFromName(firstName,lastName) != null) {
+            JOptionPane.showMessageDialog(null,String.format("Error:Member %s Already Exists",Member.toFullName.apply(firstName,lastName)));
+            return;
+        }
+        Member member = new Member(firstName.trim(),lastName.trim());
         HourLogger.memberList.add(member);
         HourLogger.currentMenu.update();
+    }
+
+    private void onOK() {
+        addMember(firstName.getText(),lastName.getText());
         dispose();
     }
 

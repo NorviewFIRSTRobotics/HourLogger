@@ -1,9 +1,10 @@
 package team1793.menu;
 
 import team1793.HourLogger;
-import team1793.Member;
+import team1793.data.Member;
 import team1793.dialog.AddMember;
 import team1793.dialog.EditMember;
+import team1793.dialog.RemoveMember;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,6 +12,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Vector;
 
 /**
  * Created by tyler on 10/8/16.
@@ -25,6 +27,7 @@ public class ViewMembers implements IMenu {
     private JButton back;
     private JLabel memberQR;
     private JButton editMember;
+    private JList memberDays;
 
     public ViewMembers() {
         update();
@@ -39,18 +42,7 @@ public class ViewMembers implements IMenu {
             } else if(c.equals("addMember")) {
                 new AddMember();
             } else if(c.equals("removeMember")) {
-                int n = JOptionPane.showConfirmDialog(
-                        null,
-                        "Are you sure you want to remove this member?",
-                        "Confirmation",
-                        JOptionPane.YES_NO_OPTION);
-                if(n == 0) {
-                    for(Member member: memberList.getSelectedValuesList()) {
-                        HourLogger.memberList.remove(member);
-                    }
-                    update();
-
-                }
+                new RemoveMember(memberList.getSelectedValuesList(), this);
             } else if(c.equals("editMember")) {
                 if(memberList.getSelectedValue() != null) {
                     System.out.println("wevwevwev");
@@ -58,6 +50,7 @@ public class ViewMembers implements IMenu {
                 }
             }
         };
+        split.setDividerLocation(.5);
         back.addActionListener(listener);
         addMember.addActionListener(listener);
         removeMember.addActionListener(listener);
@@ -84,7 +77,8 @@ public class ViewMembers implements IMenu {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            memberInfo.setText("Total Minutes:"+String.valueOf(member.getTotalMinutes()));
+            memberInfo.setText("Total Minutes:"+String.valueOf(member.getTotalMinutes())+"\n");
+            memberDays.setListData((Vector) member.getFormattedDays());
         } else {
             memberInfo.setText("");
             memberQR.setIcon(null);

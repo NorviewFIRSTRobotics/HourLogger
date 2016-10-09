@@ -1,7 +1,9 @@
 package team1793;
 
+import team1793.data.Member;
 import team1793.menu.IMenu;
 import team1793.menu.ViewMembers;
+import team1793.utils.CSVUtils;
 
 import javax.swing.*;
 import java.io.File;
@@ -24,7 +26,7 @@ public class HourLogger {
     public static JFrame frame;
     public static IMenu currentMenu;
     public static void main(String[] args) {
-        Arrays.stream(saveDir.listFiles()).filter(f -> !f.isDirectory()).map(f -> CSVManager.readMemberFile(f)).collect(Collectors.toCollection(() -> memberList));
+        Arrays.stream(saveDir.listFiles()).filter(f -> !f.isDirectory()).map(f -> CSVUtils.readMemberFile(f)).collect(Collectors.toCollection(() -> memberList));
         frame = new JFrame("Hour Logger");
         setMenu(new ViewMembers());
         frame.pack();
@@ -36,6 +38,7 @@ public class HourLogger {
         frame.setContentPane(menu.getContentPane());
         frame.setSize(menu.getContentPane().getPreferredSize());
         frame.revalidate();
+        frame.pack();
         currentMenu.update();
     }
 
@@ -46,10 +49,12 @@ public class HourLogger {
         return array;
     }
 
-    public static Member getMemberFromName(String name) {
-        Optional<Member> member = memberList.stream().filter(m -> m.isName(name)).findFirst();
+    public static Member getMemberFromName(String firstName, String lastName) {
+        Optional<Member> member = memberList.stream().filter(m -> m.isName(firstName, lastName)).findFirst();
         if(member.isPresent())
             return member.get();
         return null;
     }
+
+
 }

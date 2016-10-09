@@ -1,25 +1,28 @@
-package team1793;
+package team1793.utils;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import team1793.data.Day;
+import team1793.data.Member;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
-public class CSVManager {
+public class CSVUtils {
 
     //Delimiter used in CSV file
     private static final String NEW_LINE_SEPARATOR = "\n";
     private static final String DATE = "date", LOGIN = "login", LOGOUT="logout", TOTAL="total";
-    private static final String[] HEADER = new String[]{"date", "login", "logout", "total"};
+    private static final String[] HEADER = new String[]{DATE,LOGIN,LOGOUT,TOTAL};
     //CSV file header
     public static Member readMemberFile(File file) {
-        String fullname = file.getName().replace(".csv","");
+        String fullname = file.getName().replace(".csv","").replace("_"," ");
         String firstName = fullname.split(" ")[0],lastName = fullname.split(" ")[1];
         Member member = new Member(firstName,lastName);
         FileReader fileReader = null;
@@ -35,7 +38,10 @@ public class CSVManager {
 
             for (int i = 1; i < csvRecords.size(); i++) {
                 CSVRecord record = csvRecords.get(i);
-                Day day = new Day(record.get(LOGIN), record.get(LOGOUT));
+                String date = record.get(DATE);
+                String login = String.format("%s %s", date, record.get(LOGIN));
+                String logout =  String.format("%s %s", date, record.get(LOGOUT));
+                member.addDay(login,logout);
             }
         }
         catch (Exception e) {
@@ -60,14 +66,18 @@ public class CSVManager {
         CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator(NEW_LINE_SEPARATOR);
         try {
             //initialize FileWriter object
-            fileWriter = new FileWriter(new File(HourLogger.saveDir, member.getFullname() + ".csv"));
+            fileWriter = new FileWriter(member.getSaveFile());
             //initialize CSVPrinter object
             csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
             //Create CSV file header
-            csvFilePrinter.printRecord(HEADER);
-            List<Object[]> data = member.getData();
-            for(Object[] d:data) {
-                csvFilePrinter.printRecord(d);
+            csvFilePrinter.printRecord((Object[]) HEADER);
+            for(Map.Entry<String,Day> entry: member.days.entrySet()) {
+                String date = entry.getKey();
+                Day day = entry.getValue();
+                String login = day.getFormattedLoginTime();
+                String logout = day.getFormattedLogoutTime();
+                int total = day.getTimeLoggedIn();
+                csvFilePrinter.printRecord(date, login,logout,total);
             }
             System.out.println("CSV file was created successfully !!!");
         } catch (Exception e) {

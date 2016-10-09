@@ -1,4 +1,4 @@
-package team1793;
+package team1793.data;
 
 /**
  * Created by tyler on 10/8/16.
@@ -6,31 +6,29 @@ package team1793;
 public class Day {
 
     private int loginTime, logoutTime;
+
     public Day(int loginTime, int logoutTime) {
         this.loginTime = loginTime;
         this.logoutTime = logoutTime;
     }
 
-    public Day(int loginTime) {
-        this(loginTime,0);
-    }
 
-    public Day(String loginTime, String logoutTime) {
-
-    }
-
-    public int getTotalMinutes() {
-        if(logoutTime < loginTime)
-            return 0;
-        return logoutTime-loginTime;
-    }
     public int getTimeLoggedIn() {
         assert getLogoutTime() > getLoginTime();
         int diff = getLogoutTime() - getLoginTime();
-        if(diff < 0)
+        if (diff < 0)
             diff = 0;
         return diff;
     }
+
+    public String getFormattedLoginTime() {
+        return String.format("%02d:%02d", loginTime / 60, loginTime % 60);
+    }
+
+    public String getFormattedLogoutTime() {
+        return String.format("%02d:%02d", logoutTime / 60, logoutTime % 60);
+    }
+
     public int getLoginTime() {
         return loginTime;
     }
@@ -44,7 +42,7 @@ public class Day {
     }
 
     public void setLogoutTime(int logoutTime) {
-        if(loginTime != 0)
+        if (loginTime != 0)
             this.logoutTime = logoutTime;
     }
 }

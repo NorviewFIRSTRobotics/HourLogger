@@ -1,6 +1,7 @@
 package team1793.dialog;
 
-import team1793.Member;
+import team1793.HourLogger;
+import team1793.data.Member;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -49,8 +50,10 @@ public class LoginMember extends JDialog {
     }
 
     private void onOK() {
-        Member member = new Member(firstName.getText().trim(),lastName.getText().trim());
-
+        Member member = HourLogger.getMemberFromName(firstName.getText(),lastName.getText());
+        if(member != null) {
+            member.loginlogout();
+        }
         dispose();
     }
 
