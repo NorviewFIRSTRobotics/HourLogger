@@ -20,7 +20,7 @@ import java.util.function.BiFunction;
 public class Member {
 
     public static BiFunction<String, String, String> toFullName = (first, last) -> String.format("%s %s", first, last);
-
+    private static final int WAIT_TIME = 15;
     private String firstName, lastName;
     public HashMap<String, Day> days = new HashMap<>();
     private File qr;
@@ -53,11 +53,11 @@ public class Member {
                 //if the current time is 15 minutes after the login time
                 //TODO > 15
                 int diff = TimeUtils.getMinuteSum(now) - day.getLoginTime();
-                if(diff >= 15) {
+                if(diff >= WAIT_TIME) {
                     day.setLogoutTime(TimeUtils.getMinuteSum(now));
                     JOptionPane.showMessageDialog(null,String.format("Successfully Logged out at %s", now));
                 } else {
-                    JOptionPane.showMessageDialog(null,String.format("You have to wait %d more minutes to logout", 15-diff));
+                    JOptionPane.showMessageDialog(null,String.format("You have to wait %d more minutes to logout", WAIT_TIME-diff));
                 }
             } else {
                 JOptionPane.showMessageDialog(null,String.format("You already logged out today at %s!",day.getFormattedLogoutTime()));
