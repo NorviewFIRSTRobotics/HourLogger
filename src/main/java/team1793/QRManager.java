@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
  * Created by tyler on 10/7/16.
  */
 public class QRManager {
-    public static void generateQR(String name) {
+    public static File generateQR(String name) {
         FileOutputStream outputStream;
         File file = new File(HourLogger.qrDir,name + ".png");
         try {
@@ -21,5 +21,6 @@ public class QRManager {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        return file;
     }
 }
