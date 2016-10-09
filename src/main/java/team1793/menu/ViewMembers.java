@@ -45,7 +45,6 @@ public class ViewMembers implements IMenu {
                 new RemoveMember(memberList.getSelectedValuesList(), this);
             } else if(c.equals("editMember")) {
                 if(memberList.getSelectedValue() != null) {
-                    System.out.println("wevwevwev");
                     new EditMember(memberList.getSelectedValue());
                 }
             }
@@ -82,6 +81,7 @@ public class ViewMembers implements IMenu {
         } else {
             memberInfo.setText("");
             memberQR.setIcon(null);
+            memberDays.clearSelection();
         }
     }
     @Override

@@ -1,6 +1,7 @@
 package team1793.menu;
 
 import team1793.HourLogger;
+import team1793.dialog.CameraLogin;
 import team1793.dialog.LoginMember;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ public class MainMenu implements IMenu {
     private JButton loginButton;
     private JPanel rootPanel;
     private JButton viewMembersButton;
+    private JButton cameraButton;
 
     public MainMenu() {
         viewMembersButton.addActionListener( e -> {
@@ -20,6 +22,9 @@ public class MainMenu implements IMenu {
         });
         loginButton.addActionListener(e -> {
             new LoginMember();
+        });
+        cameraButton.addActionListener(e -> {
+            new CameraLogin();
         });
     }
 

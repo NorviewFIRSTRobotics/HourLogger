@@ -16,8 +16,8 @@ public class Day {
     public int getTimeLoggedIn() {
         assert getLogoutTime() > getLoginTime();
         int diff = getLogoutTime() - getLoginTime();
-        if (diff < 0)
-            diff = 0;
+        if (diff <= 0)
+            diff = 60;
         return diff;
     }
 
