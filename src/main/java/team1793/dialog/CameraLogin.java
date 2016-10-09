@@ -12,6 +12,8 @@ import team1793.data.Member;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -56,7 +58,12 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
 
         pack();
         setVisible(true);
-
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                webcam.close();
+            }
+        });
         executor.execute(this);
     }
 
@@ -93,8 +100,8 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
             if (result != null) {
                 textarea.setText(result.getText());
                 String[] names = result.getText().split(" ");
-                Member member = HourLogger.getMemberFromName(names[0],names[1]);
-                if(member != null) {
+                Member member = HourLogger.getMemberFromName(names[0], names[1]);
+                if (member != null) {
                     member.loginlogout();
                 }
             }
