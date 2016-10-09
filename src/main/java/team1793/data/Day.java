@@ -6,7 +6,7 @@ package team1793.data;
 public class Day {
 
     private int loginTime, logoutTime;
-
+    private boolean needsBusPass;
     public Day(int loginTime, int logoutTime) {
         this.loginTime = loginTime;
         this.logoutTime = logoutTime;
@@ -44,5 +44,13 @@ public class Day {
     public void setLogoutTime(int logoutTime) {
         if (loginTime != 0)
             this.logoutTime = logoutTime;
+    }
+
+    public boolean needsBusPass() {
+        return needsBusPass;
+    }
+
+    public void setNeedsBusPass(boolean needsBusPass) {
+        this.needsBusPass = needsBusPass;
     }
 }

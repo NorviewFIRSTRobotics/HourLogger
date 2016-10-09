@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hourlogger.iml" filepath="$PROJECT_DIR$/.idea/modules/hourlogger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hourlogger_main.iml" filepath="$PROJECT_DIR$/.idea/modules/hourlogger_main.iml" group="hourlogger" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hourlogger_test.iml" filepath="$PROJECT_DIR$/.idea/modules/hourlogger_test.iml" group="hourlogger" />
+    </modules>
+  </component>
+</project>

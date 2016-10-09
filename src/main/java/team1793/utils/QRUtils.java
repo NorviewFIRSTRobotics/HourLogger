@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 public class QRUtils {
     public static File generateQR(String name) {
         FileOutputStream outputStream;
-        File file = new File(HourLogger.qrDir,name + ".png");
+        File file = new File(HourLogger.qrDir,name.replace(" ","_") + ".png");
         try {
             if(!HourLogger.qrDir.exists()) HourLogger.qrDir.mkdirs();
             outputStream = new FileOutputStream(file);

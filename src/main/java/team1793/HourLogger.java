@@ -7,10 +7,7 @@ import team1793.utils.CSVUtils;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -28,19 +25,22 @@ public class HourLogger {
     public static void main(String[] args) {
         if(!saveDir.exists()) saveDir.mkdirs();
         Arrays.stream(saveDir.listFiles()).filter(f -> !f.isDirectory()).map(f -> CSVUtils.readMemberFile(f)).collect(Collectors.toCollection(() -> memberList));
+        Collections.sort(memberList, (m1, m2) -> m1.getFullname().compareTo(m2.getFullname()));
         frame = new JFrame("Hour Logger");
         setMenu(new ViewMembers());
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+        frame.validate();
     }
     public static void setMenu(IMenu menu) {
         currentMenu = menu;
         frame.setContentPane(menu.getContentPane());
         frame.setSize(menu.getContentPane().getPreferredSize());
         frame.revalidate();
-        frame.pack();
         currentMenu.update();
+        frame.pack();
+        frame.validate();
     }
 
     public static Member[] getMemberArray() {

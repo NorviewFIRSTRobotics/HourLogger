@@ -1,27 +1,24 @@
-package team1793.dialog;
+package team1793.menu;
 
-import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
-import team1793.HourLogger;
-import team1793.data.Member;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by tyler on 10/8/16.
+ * Created by tyler on 10/9/16.
  */
-public class EditMember extends JFrame {
+public class Config implements IMenu {
     private JPanel rootPanel;
 
-    public EditMember(Member member) {
-        super("Editing " + member.getFullname());
-        setContentPane(rootPanel);
-        setLocation(HourLogger.frame.getMousePosition());
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
-        pack();
+    @Override
+    public Container getContentPane() {
+        return rootPanel;
+    }
+
+    @Override
+    public void update() {
+
     }
 
     {
@@ -41,8 +38,6 @@ public class EditMember extends JFrame {
     private void $$$setupUI$$$() {
         rootPanel = new JPanel();
         rootPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        final Spacer spacer1 = new Spacer();
-        rootPanel.add(spacer1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
     }
 
     /**

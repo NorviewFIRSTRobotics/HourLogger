@@ -42,7 +42,8 @@ public class Member {
         String date = TimeUtils.getDateOnly(now);
         if(!days.containsKey(date)) {
             //sets login and logout as same time.
-            addDay(now,now);
+            int reply = JOptionPane.showConfirmDialog(null, "Do you need a bus pass?", "Bus Pass", JOptionPane.YES_NO_OPTION);
+            addDay(now,now, reply == JOptionPane.YES_OPTION);
             JOptionPane.showMessageDialog(null,String.format("Successfully Logged at %s", now));
         }
         else {
@@ -67,10 +68,11 @@ public class Member {
         load();
     }
 
-    public void addDay(String loginTime, String logoutTime) {
+    public void addDay(String loginTime, String logoutTime,boolean buspass) {
         String date = TimeUtils.areSameDate(loginTime, logoutTime) ? TimeUtils.getDateOnly(loginTime) : "";
         if (!date.isEmpty()) {
             Day day = new Day(TimeUtils.getMinuteSum(loginTime), TimeUtils.getMinuteSum(logoutTime));
+            day.setNeedsBusPass(buspass);
             days.put(date, day);
         }
         save();
@@ -84,13 +86,9 @@ public class Member {
     }
 
     public List getFormattedDays() {
-        return days.entrySet().stream().map( (e) -> e.getKey()+", login:"+ e.getValue().getFormattedLoginTime() + ", logout:"+ e.getValue().getFormattedLogoutTime() + "\n").collect(Vector::new,Vector::add,Vector::addAll);
+        return days.entrySet().stream().map( (e) -> "bus pass:"+ e.getValue().needsBusPass() + "," + e.getKey()+", login:"+ e.getValue().getFormattedLoginTime() + ", logout:"+ e.getValue().getFormattedLogoutTime() + "\n").collect(Vector::new,Vector::add,Vector::addAll);
     }
-//
-//    public void sync() {
-//        CSVUtils.writeMemberFile(this);
-//        setValues(CSVUtils.readMemberFile(new File(HourLogger.saveDir, getFullname() + ".csv")));
-//    }
+
     public String getFullname() {
         return toFullName.apply(firstName, lastName);
     }
