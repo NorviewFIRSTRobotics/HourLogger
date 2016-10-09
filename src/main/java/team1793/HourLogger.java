@@ -22,9 +22,12 @@ public class HourLogger {
 
     public static JFrame frame;
     public static IMenu currentMenu;
+
     public static void main(String[] args) {
-        if(!saveDir.exists()) saveDir.mkdirs();
-        Arrays.stream(saveDir.listFiles()).filter(f -> !f.isDirectory()).map(f -> CSVUtils.readMemberFile(f)).collect(Collectors.toCollection(() -> memberList));
+        //noinspection ResultOfMethodCallIgnored
+        saveDir.mkdirs();
+        //noinspection ConstantConditions
+        Arrays.stream(saveDir.listFiles()).filter(f -> !f.isDirectory()).map(CSVUtils::readMemberFile).collect(Collectors.toCollection(() -> memberList));
         Collections.sort(memberList, (m1, m2) -> m1.getFullname().compareTo(m2.getFullname()));
         frame = new JFrame("Hour Logger");
         setMenu(new ViewMembers());

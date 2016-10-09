@@ -19,11 +19,12 @@ import java.util.function.BiFunction;
  */
 public class Member {
 
-    public static BiFunction<String, String, String> toFullName = (first, last) -> String.format("%s %s", first, last);
     private static final int WAIT_TIME = 15;
-    private String firstName, lastName;
+    public static BiFunction<String, String, String> toFullName = (first, last) -> String.format("%s %s", first, last);
+    private final String firstName;
+    private final String lastName;
+    private final File qr;
     public HashMap<String, Day> days = new HashMap<>();
-    private File qr;
 
     public Member(String firstName, String lastName) {
         this.firstName = firstName.toLowerCase();
@@ -44,7 +45,7 @@ public class Member {
             //sets login and logout as same time.
             int reply = JOptionPane.showConfirmDialog(null, "Do you need a bus pass?", "Bus Pass", JOptionPane.YES_NO_OPTION);
             addDay(now,now, reply == JOptionPane.YES_OPTION);
-            JOptionPane.showMessageDialog(null,String.format("Successfully Logged at %s", now));
+//            JOptionPane.showMessageDialog(null,String.format("Successfully Logged at %s", now));
         }
         else {
             System.out.println("logging out " + now);
@@ -52,11 +53,10 @@ public class Member {
             // this means you have not logged out yet
             if(day.getLoginTime() == day.getLogoutTime()) {
                 //if the current time is 15 minutes after the login time
-                //TODO > 15
                 int diff = TimeUtils.getMinuteSum(now) - day.getLoginTime();
                 if(diff >= WAIT_TIME) {
                     day.setLogoutTime(TimeUtils.getMinuteSum(now));
-                    JOptionPane.showMessageDialog(null,String.format("Successfully Logged out at %s", now));
+//                    JOptionPane.showMessageDialog(null,String.format("Successfully Logged out at %s", now));
                 } else {
                     JOptionPane.showMessageDialog(null,String.format("You have to wait %d more minutes to logout", WAIT_TIME-diff));
                 }
@@ -65,7 +65,6 @@ public class Member {
             }
         }
         save();
-        load();
     }
 
     public void addDay(String loginTime, String logoutTime,boolean buspass) {
@@ -77,15 +76,14 @@ public class Member {
         }
         save();
     }
-    public void save() {
+
+    private void save() {
         CSVUtils.writeMemberFile(this);
     }
 
-    public void load() {
-        Member member = CSVUtils.readMemberFile(getSaveFile());
-    }
 
     public List getFormattedDays() {
+        //noinspection unchecked
         return days.entrySet().stream().map( (e) -> "bus pass:"+ e.getValue().needsBusPass() + "," + e.getKey()+", login:"+ e.getValue().getFormattedLoginTime() + ", logout:"+ e.getValue().getFormattedLogoutTime() + "\n").collect(Vector::new,Vector::add,Vector::addAll);
     }
 
@@ -98,7 +96,7 @@ public class Member {
     }
 
     public int getTotalMinutes() {
-        OptionalInt total = days.values().stream().mapToInt( day -> day.getTimeLoggedIn()).reduce( (sum,n) -> sum+n);
+        OptionalInt total = days.values().stream().mapToInt(Day::getTimeLoggedIn).reduce((sum, n) -> sum + n);
         if(total.isPresent())
             return total.getAsInt();
         return 0;

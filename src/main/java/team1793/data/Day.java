@@ -37,10 +37,6 @@ public class Day {
         return logoutTime;
     }
 
-    public void setLoginTime(int loginTime) {
-        this.loginTime = loginTime;
-    }
-
     public void setLogoutTime(int logoutTime) {
         if (loginTime != 0)
             this.logoutTime = logoutTime;

@@ -12,7 +12,7 @@ import java.util.Date;
 public class TimeUtils {
     private final static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 
-    public static Calendar fromString(String date) {
+    private static Calendar fromString(String date) {
         Calendar cal = Calendar.getInstance();
         try {
             cal.setTime(dateFormat.parse(date));
@@ -23,22 +23,30 @@ public class TimeUtils {
         return null;
     }
 
-    public static int getDayOfMonth(String date) {
+    private static int getDayOfMonth(String date) {
+        //noinspection ConstantConditions
         return fromString(date).get(Calendar.DAY_OF_MONTH);
     }
 
-    public static int getMonth(String date) { return fromString(date).get(Calendar.MONTH)+1;  }
+    private static int getMonth(String date) { //noinspection ConstantConditions
+        return fromString(date).get(Calendar.MONTH) + 1;
+    }
 
-    public static int getYear(String date) { return fromString(date).get(Calendar.YEAR);  }
+    private static int getYear(String date) { //noinspection ConstantConditions
+        return fromString(date).get(Calendar.YEAR);
+    }
 
     public static String getDateOnly(String date) {
         return String.format("%s/%s/%s",getMonth(date),getDayOfMonth(date),getYear(date));
     }
 
 
-    public static int getHour(String date) { return fromString(date).get(Calendar.HOUR_OF_DAY);}
+    private static int getHour(String date) { //noinspection ConstantConditions
+        return fromString(date).get(Calendar.HOUR_OF_DAY);
+    }
 
-    public static int getMinute(String date){
+    private static int getMinute(String date) {
+        //noinspection ConstantConditions
         return fromString(date).get(Calendar.MINUTE);
     }
 

@@ -21,6 +21,7 @@ public class CSVUtils {
     private static final String NEW_LINE_SEPARATOR = "\n";
     private static final String DATE = "date", LOGIN = "login", LOGOUT="logout", TOTAL="total", BUSPASS="buspass";
     private static final String[] HEADER = new String[]{DATE,LOGIN,LOGOUT,TOTAL,BUSPASS};
+
     //CSV file header
     public static void addMemberList(File file) {
         FileReader fileReader = null;
@@ -46,7 +47,9 @@ public class CSVUtils {
             e.printStackTrace();
         } finally {
             try {
+                assert fileReader != null;
                 fileReader.close();
+                assert csvFileParser != null;
                 csvFileParser.close();
             } catch (IOException e) {
                 System.out.println("Error while closing fileReader/csvFileParser !!!");
@@ -56,7 +59,8 @@ public class CSVUtils {
     }
     public static Member readMemberFile(File file) {
         String fullname = file.getName().replace(".csv","").replace("_"," ");
-        String firstName = fullname.split(" ")[0],lastName = fullname.split(" ")[1];
+        String[] s = fullname.split(" ");
+        String firstName = s[0] != null ? s[0] : "", lastName = s[1] != null ? s[1] : "";
         Member member = new Member(firstName,lastName);
         FileReader fileReader = null;
         CSVParser csvFileParser = null;
@@ -82,7 +86,9 @@ public class CSVUtils {
             e.printStackTrace();
         } finally {
             try {
+                assert fileReader != null;
                 fileReader.close();
+                assert csvFileParser != null;
                 csvFileParser.close();
             } catch (IOException e) {
                 System.out.println("Error while closing fileReader/csvFileParser !!!");
@@ -118,8 +124,10 @@ public class CSVUtils {
             e.printStackTrace();
         } finally {
             try {
+                assert fileWriter != null;
                 fileWriter.flush();
                 fileWriter.close();
+                assert csvFilePrinter != null;
                 csvFilePrinter.close();
             } catch (IOException e) {
                 System.out.println("Error while flushing/closing fileWriter/csvPrinter !!!");

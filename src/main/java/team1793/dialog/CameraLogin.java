@@ -10,8 +10,8 @@ import team1793.HourLogger;
 import team1793.data.Member;
 
 import javax.swing.*;
-import java.awt.Dimension;
 import java.awt.*;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -24,7 +24,7 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
 
     private static final long serialVersionUID = 6441489157408381878L;
 
-    private Executor executor = Executors.newSingleThreadExecutor(this);
+    private final Executor executor = Executors.newSingleThreadExecutor(this);
 
     private Webcam webcam = null;
     private WebcamPanel panel = null;
@@ -35,8 +35,8 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
 
         setLayout(new FlowLayout());
         setTitle("Read QR / Bar Code With Webcam");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setBackground(new Color(-12828863));
         Dimension size = WebcamResolution.QVGA.getSize();
 
         webcam = Webcam.getWebcams().get(0);
@@ -48,7 +48,9 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
         textarea = new JTextArea();
         textarea.setEditable(false);
         textarea.setPreferredSize(size);
-
+        panel.setBackground(new Color(-12828863));
+        textarea.setBackground(new Color(-12828863));
+        textarea.setForeground(new Color(0xFFFFFF));
         add(panel);
         add(textarea);
 
@@ -61,6 +63,7 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
     @Override
     public void run() {
 
+        //noinspection InfiniteLoopStatement
         do {
             try {
                 Thread.sleep(100);
@@ -69,7 +72,7 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
             }
 
             Result result = null;
-            BufferedImage image = null;
+            BufferedImage image;
 
             if (webcam.isOpen()) {
 
