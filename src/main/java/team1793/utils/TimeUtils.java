@@ -52,6 +52,9 @@ public class TimeUtils {
         return minute + (hours * 60);
     }
 
+    public static String now() {
+        return dateFormat.format(new Date());
+    }
     public static Date now(DateFormat format) {
         Date date;
         format.format(date = new Date());

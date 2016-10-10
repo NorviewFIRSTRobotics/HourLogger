@@ -49,4 +49,9 @@ public class Day {
     public void setNeedsBusPass(boolean needsBusPass) {
         this.needsBusPass = needsBusPass;
     }
+
+    @Override
+    public String toString() {
+        return getFormattedLoginTime() + "," + getFormattedLogoutTime();
+    }
 }

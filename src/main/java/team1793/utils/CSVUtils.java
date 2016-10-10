@@ -64,7 +64,7 @@ public class CSVUtils {
         String fullname = file.getName().replace(".csv","").replace("_"," ");
         String[] s = fullname.split(" ");
         String firstName = s[0] != null ? s[0] : "", lastName = s[1] != null ? s[1] : "";
-        Member member = new Member(firstName,lastName, Member.Team.valueOf(team.toUpperCase()));
+        Member member = new Member(firstName,lastName, Member.Team.getValue(team));
         FileReader fileReader = null;
         CSVParser csvFileParser = null;
         //Create the CSVFormat object with the header mapping
@@ -114,8 +114,8 @@ public class CSVUtils {
             csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
             //Create CSV file header
             csvFilePrinter.printRecord((Object[]) HEADER);
-            for(Map.Entry<Date,Day> entry: member.days.entrySet()) {
-                String date = TimeUtils.toString(entry.getKey());
+            for(Map.Entry<String,Day> entry: member.days.entrySet()) {
+                String date = entry.getKey();
                 Day day = entry.getValue();
                 String login = day.getFormattedLoginTime();
                 String logout = day.getFormattedLogoutTime();

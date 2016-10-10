@@ -29,15 +29,8 @@ public class HourLogger {
     public static IMenu currentMenu;
 
     public static void main(String[] args) {
-        //noinspection ResultOfMethodCallIgnored
-        saveDir.mkdirs();
-        //noinspection ConstantConditions
-        try {
-            Files.walk(saveDir.toPath()).map(p -> p.toFile()).filter(f -> f.getName().endsWith("csv")).map(CSVUtils::readMemberFile).collect(Collectors.toCollection(() -> memberList));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Collections.sort(memberList, (m1, m2) -> m1.getFullname().compareTo(m2.getFullname()));
+        HourLogger.loadMembers();
+        HourLogger.sort();
         frame = new JFrame("Hour Logger");
         setMenu(new ViewMembers());
         frame.pack();
@@ -67,6 +60,17 @@ public class HourLogger {
         if(member.isPresent())
             return member.get();
         return null;
+    }
+    public static void loadMembers() {
+        saveDir.mkdirs();
+        try {
+            Files.walk(saveDir.toPath()).map(p -> p.toFile()).filter(f -> f.getName().endsWith("csv")).map(CSVUtils::readMemberFile).collect(Collectors.toCollection(() -> memberList));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void sort() {
+        Collections.sort(memberList, (m1, m2) -> m1.getFullname().compareTo(m2.getFullname()));
     }
 
 

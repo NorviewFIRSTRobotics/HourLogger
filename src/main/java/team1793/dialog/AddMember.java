@@ -18,14 +18,14 @@ public class AddMember extends JDialog {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTextField firstName, lastName;
-    private JComboBox teamCombo;
+    private JComboBox<String> teamCombo;
 
     public AddMember() {
         setContentPane(contentPane);
         setModal(true);
         firstName.setName("First Name");
         lastName.setName("Last Name");
-        Arrays.stream(Member.Team.VALUES).forEach(teamCombo::addItem);
+        Arrays.stream(Member.Team.VALUES).map(Member.Team::getName).forEach(teamCombo::addItem);
         getRootPane().setDefaultButton(buttonOK);
 
         buttonOK.addActionListener(e -> onOK());
@@ -51,13 +51,14 @@ public class AddMember extends JDialog {
             JOptionPane.showMessageDialog(null, String.format("Error:Member %s Already Exists", Member.toFullName.apply(firstName, lastName)));
             return;
         }
-        Member member = new Member(firstName.trim(), lastName.trim(), Member.Team.valueOf(team));
+        Member member = new Member(firstName.trim(), lastName.trim(), Member.Team.getValue(team));
         HourLogger.memberList.add(member);
+        HourLogger.sort();
         HourLogger.currentMenu.update();
     }
 
     private void onOK() {
-        addMember(firstName.getText(), lastName.getText(), teamCombo.getSelectedItem().toString().toUpperCase());
+        addMember(firstName.getText(), lastName.getText(), (String) teamCombo.getSelectedItem());
         dispose();
     }
 
