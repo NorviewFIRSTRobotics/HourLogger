@@ -54,3 +54,5 @@ python/
 src/main/groovy/
 src/main/resources/
 src/test/
+/.idea/
+
