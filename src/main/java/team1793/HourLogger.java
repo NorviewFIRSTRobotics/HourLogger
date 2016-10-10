@@ -7,7 +7,12 @@ import team1793.utils.CSVUtils;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -16,7 +21,7 @@ import java.util.stream.Collectors;
 public class HourLogger {
     public static final File mainDir = new File(System.getProperty("user.home") + "/HourLogger/");
     public static final File saveDir = new File(mainDir, "members");
-    public static final File qrDir = new File(saveDir, "qr");
+    public static final File qrDir = new File(mainDir, "qr");
 
     public static List<Member> memberList = new ArrayList<>();
 
@@ -27,7 +32,11 @@ public class HourLogger {
         //noinspection ResultOfMethodCallIgnored
         saveDir.mkdirs();
         //noinspection ConstantConditions
-        Arrays.stream(saveDir.listFiles()).filter(f -> !f.isDirectory()).map(CSVUtils::readMemberFile).collect(Collectors.toCollection(() -> memberList));
+        try {
+            Files.walk(saveDir.toPath()).map(p -> p.toFile()).filter(f -> f.getName().endsWith("csv")).map(CSVUtils::readMemberFile).collect(Collectors.toCollection(() -> memberList));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Collections.sort(memberList, (m1, m2) -> m1.getFullname().compareTo(m2.getFullname()));
         frame = new JFrame("Hour Logger");
         setMenu(new ViewMembers());
