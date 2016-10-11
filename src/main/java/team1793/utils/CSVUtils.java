@@ -60,10 +60,9 @@ public class CSVUtils {
         }
     }
     public static Member readMemberFile(File file) {
-        String team = file.getParentFile().getName();
         String fullname = file.getName().replace(".csv","").replace("_"," ");
         String[] s = fullname.split(" ");
-        String firstName = s[0] != null ? s[0] : "", lastName = s[1] != null ? s[1] : "";
+        String team =  s[0] != null ? s[0] : "", firstName = s[1] != null ? s[1] : "", lastName = s[2] != null ? s[2] : "";
         Member member = new Member(firstName,lastName, Member.Team.getValue(team));
         FileReader fileReader = null;
         CSVParser csvFileParser = null;

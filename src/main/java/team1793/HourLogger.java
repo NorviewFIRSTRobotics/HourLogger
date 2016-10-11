@@ -8,13 +8,10 @@ import team1793.utils.CSVUtils;
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static team1793.Config.saveDir;
 
 
 /**
@@ -39,10 +36,11 @@ public class HourLogger {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
-                memberList.stream().forEach(CSVUtils::writeMemberFile);
+//                memberList.stream().forEach(CSVUtils::writeMemberFile);
             }
         });
     }
+
     public static void setMenu(IMenu menu) {
         currentMenu = menu;
         frame.setContentPane(menu.getContentPane());
@@ -55,25 +53,23 @@ public class HourLogger {
 
     public static Member[] getMemberArray() {
         Member[] array = new Member[memberList.size()];
-        for(int i = 0; i < array.length;i++)
+        for (int i = 0; i < array.length; i++)
             array[i] = memberList.get(i);
         return array;
     }
 
     public static Member getMemberFromName(String firstName, String lastName) {
         Optional<Member> member = memberList.stream().filter(m -> m.isName(firstName, lastName)).findFirst();
-        if(member.isPresent())
+        if (member.isPresent())
             return member.get();
         return null;
     }
+
     public static void loadMembers() {
-        Config.saveDir.mkdirs();
-        try {
-            Files.walk(Config.saveDir.toPath()).map(p -> p.toFile()).filter(f -> f.getName().endsWith("csv")).map(CSVUtils::readMemberFile).collect(Collectors.toCollection(() -> memberList));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        saveDir.mkdirs();
+        Arrays.stream(saveDir.listFiles()).filter(f -> !f.isDirectory()).map(f -> CSVUtils.readMemberFile(f)).collect(Collectors.toCollection(() -> memberList));
     }
+
     public static void sort() {
         Collections.sort(memberList, (m1, m2) -> m1.getFullname().compareTo(m2.getFullname()));
     }

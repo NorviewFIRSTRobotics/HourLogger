@@ -145,9 +145,8 @@ public class Member {
     }
 
     public File getSaveFile() {
-        File teamDir = new File(Config.saveDir, this.team.getName().toLowerCase());
-        teamDir.mkdirs();
-        return new File(teamDir,getFullname().replace(" ","_") + ".csv");
+        String name = this.team.getName().toLowerCase()+"_"+getFullname().replace(" ","_") + ".csv";
+        return new File(Config.saveDir,name);
     }
 
     @Override
@@ -171,7 +170,7 @@ public class Member {
         Team(String name) {
             this.name = name;
         }
-        public static Team[] VALUES = new Team[]{PROGRAMMING,MECHANICAL,ELECTRICAL,SHOP,MISSION,DESIGN};
+        public static Team[] VALUES = values();
         public static Team getValue( String name) {
             name=capitalize(name);
             for(Team team: VALUES)

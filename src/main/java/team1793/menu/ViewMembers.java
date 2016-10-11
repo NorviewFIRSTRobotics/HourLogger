@@ -44,6 +44,7 @@ public class ViewMembers implements IMenu {
     private JTable memberTable;
     private JButton configButton;
     private JLabel memberQr;
+    private JList memberDays;
     private Member selectedMember;
     public ViewMembers() {
         $$$setupUI$$$();
@@ -104,6 +105,9 @@ public class ViewMembers implements IMenu {
             public void valueChanged(ListSelectionEvent event) {
                 if (memberTable.getSelectedRow() > -1) {
                     selectedMember = memberList.get(memberTable.getSelectedRow());
+
+                    memberDays.setListData(selectedMember.getFormattedDays().toArray());
+
                     if(selectedMember == null)
                         return;
                     BufferedImage qrCode;
@@ -136,6 +140,7 @@ public class ViewMembers implements IMenu {
     @Override
     public void update() {
         setTableData();
+
     }
 
     public void setTableData() {
