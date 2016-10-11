@@ -2,7 +2,7 @@ package team1793.utils;
 
 import net.glxn.qrgen.core.image.ImageType;
 import net.glxn.qrgen.javase.QRCode;
-import team1793.HourLogger;
+import team1793.Config;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,9 +14,9 @@ import java.io.FileOutputStream;
 public class QRUtils {
     public static File generateQR(String name) {
         FileOutputStream outputStream;
-        File file = new File(HourLogger.qrDir,name.replace(" ","_") + ".png");
+        File file = new File(Config.qrDir,name.replace(" ","_") + ".png");
         try {
-            if(!HourLogger.qrDir.exists()) HourLogger.qrDir.mkdirs();
+            if(!Config.qrDir.exists()) Config.qrDir.mkdirs();
             outputStream = new FileOutputStream(file);
             QRCode.from(name).to(ImageType.PNG).writeTo(outputStream);
         } catch (FileNotFoundException e) {

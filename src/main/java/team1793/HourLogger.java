@@ -6,7 +6,8 @@ import team1793.menu.ViewMembers;
 import team1793.utils.CSVUtils;
 
 import javax.swing.*;
-import java.io.File;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -15,20 +16,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 /**
  * Created by tyler on 10/7/16.
  */
 public class HourLogger {
-    public static final File mainDir = new File(System.getProperty("user.home") + "/HourLogger/");
-    public static final File saveDir = new File(mainDir, "members");
-    public static final File qrDir = new File(mainDir, "qr");
-
     public static List<Member> memberList = new ArrayList<>();
 
     public static JFrame frame;
     public static IMenu currentMenu;
 
     public static void main(String[] args) {
+        Config.init();
         HourLogger.loadMembers();
         HourLogger.sort();
         frame = new JFrame("Hour Logger");
@@ -37,6 +36,12 @@ public class HourLogger {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.validate();
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                memberList.stream().forEach(CSVUtils::writeMemberFile);
+            }
+        });
     }
     public static void setMenu(IMenu menu) {
         currentMenu = menu;
@@ -62,9 +67,9 @@ public class HourLogger {
         return null;
     }
     public static void loadMembers() {
-        saveDir.mkdirs();
+        Config.saveDir.mkdirs();
         try {
-            Files.walk(saveDir.toPath()).map(p -> p.toFile()).filter(f -> f.getName().endsWith("csv")).map(CSVUtils::readMemberFile).collect(Collectors.toCollection(() -> memberList));
+            Files.walk(Config.saveDir.toPath()).map(p -> p.toFile()).filter(f -> f.getName().endsWith("csv")).map(CSVUtils::readMemberFile).collect(Collectors.toCollection(() -> memberList));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,6 +77,5 @@ public class HourLogger {
     public static void sort() {
         Collections.sort(memberList, (m1, m2) -> m1.getFullname().compareTo(m2.getFullname()));
     }
-
 
 }

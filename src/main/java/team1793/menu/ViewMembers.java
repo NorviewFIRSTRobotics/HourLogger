@@ -3,6 +3,8 @@ package team1793.menu;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import team1793.Config;
+import team1793.data.Member;
 import team1793.data.MemberTableModel;
 import team1793.dialog.AddMember;
 import team1793.dialog.CameraLogin;
@@ -10,13 +12,18 @@ import team1793.dialog.LoginMember;
 import team1793.dialog.RemoveMember;
 import team1793.utils.CSVUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -34,10 +41,10 @@ public class ViewMembers implements IMenu {
     private JButton loginButton;
     private JButton cameraButton;
 
-    private JLabel memberQR;
-
     private JTable memberTable;
-
+    private JButton configButton;
+    private JLabel memberQr;
+    private Member selectedMember;
     public ViewMembers() {
         $$$setupUI$$$();
         update();
@@ -70,22 +77,53 @@ public class ViewMembers implements IMenu {
                 case "cameraLogin":
                     new CameraLogin();
                     break;
+                case "config":
+                    chooser = new JFileChooser();
+                    chooser.setCurrentDirectory(new java.io.File("."));
+                    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                    chooser.setAcceptAllFileFilterUsed(false);
+                    returnVal = chooser.showOpenDialog(rootPanel);
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        File file = chooser.getSelectedFile();
+                        Config.setSaveDir(new File(chooser.getSelectedFile().getName()));
+                    }
+                    break;
             }
         };
 
-//        back.addActionListener(listener);
         addMember.addActionListener(listener);
         removeMember.addActionListener(listener);
         addMemberList.addActionListener(listener);
         loginButton.addActionListener(listener);
         cameraButton.addActionListener(listener);
+        configButton.addActionListener(listener);
         rootPanel.validate();
 
         memberTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent event) {
                 if (memberTable.getSelectedRow() > -1) {
+                    selectedMember = memberList.get(memberTable.getSelectedRow());
+                    if(selectedMember == null)
+                        return;
+                    BufferedImage qrCode;
+                    try {
+                        qrCode = ImageIO.read(selectedMember.getQR());
+                        memberQr.setIcon(new ImageIcon(qrCode));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
+                } else {
+                    memberQr.setIcon(null);
                 }
+            }
+        });
+        memberQr.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+//                if(selectedMember != null && mouseEvent.getButton() == MouseEvent.BUTTON1)
+//                    HourLogger.print(selectedMember.getQR());
             }
         });
     }

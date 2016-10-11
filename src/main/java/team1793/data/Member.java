@@ -1,7 +1,6 @@
 package team1793.data;
 
-import com.sun.xml.internal.ws.util.StringUtils;
-import team1793.HourLogger;
+import team1793.Config;
 import team1793.utils.CSVUtils;
 import team1793.utils.QRUtils;
 import team1793.utils.TimeUtils;
@@ -21,8 +20,8 @@ public class Member {
 
     private String firstName, lastName;
     private Team team;
-    private final File qr;
     public HashMap<String, Day> days = new HashMap<>();
+    private File qr;
 
     public Member(String firstName, String lastName, Team team) {
         this.firstName = firstName.toLowerCase();
@@ -115,7 +114,7 @@ public class Member {
             lastStr = TimeUtils.toString(last);
             buspass = days.get(lastStr).needsBusPass() ? "Yes" : "No";
         }
-        return Arrays.asList(new Object[]{StringUtils.capitalize(firstName),StringUtils.capitalize(lastName),StringUtils.capitalize(team.getName()),lastStr, buspass,getTotalMinutes()});
+        return Arrays.asList(new Object[]{capitalize(firstName),capitalize(lastName),capitalize(team.getName()),lastStr, buspass,getTotalMinutes()});
     }
 
     public Date getLastDay() {
@@ -146,7 +145,7 @@ public class Member {
     }
 
     public File getSaveFile() {
-        File teamDir = new File(HourLogger.saveDir, this.team.getName().toLowerCase());
+        File teamDir = new File(Config.saveDir, this.team.getName().toLowerCase());
         teamDir.mkdirs();
         return new File(teamDir,getFullname().replace(" ","_") + ".csv");
     }
@@ -174,7 +173,7 @@ public class Member {
         }
         public static Team[] VALUES = new Team[]{PROGRAMMING,MECHANICAL,ELECTRICAL,SHOP,MISSION,DESIGN};
         public static Team getValue( String name) {
-            name=StringUtils.capitalize(name);
+            name=capitalize(name);
             for(Team team: VALUES)
                 if(name.equals(team.getName()))
                     return team;
@@ -184,5 +183,14 @@ public class Member {
             return name;
         }
 
+    }
+    public static String capitalize(String name) {
+        if(name != null && name.length() != 0) {
+            char[] chars = name.toCharArray();
+            chars[0] = Character.toUpperCase(chars[0]);
+            return new String(chars);
+        } else {
+            return name;
+        }
     }
 }
