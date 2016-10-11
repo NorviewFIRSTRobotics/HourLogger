@@ -46,6 +46,7 @@ public class ViewMembers implements IMenu {
     private JLabel memberQr;
     private JList memberDays;
     private Member selectedMember;
+
     public ViewMembers() {
         $$$setupUI$$$();
         update();
@@ -80,7 +81,7 @@ public class ViewMembers implements IMenu {
                     break;
                 case "config":
                     chooser = new JFileChooser();
-                    chooser.setCurrentDirectory(new java.io.File("."));
+                    chooser.setCurrentDirectory(new File("."));
                     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                     chooser.setAcceptAllFileFilterUsed(false);
                     returnVal = chooser.showOpenDialog(rootPanel);
@@ -108,7 +109,7 @@ public class ViewMembers implements IMenu {
 
                     memberDays.setListData(selectedMember.getFormattedDays().toArray());
 
-                    if(selectedMember == null)
+                    if (selectedMember == null)
                         return;
                     BufferedImage qrCode;
                     try {
@@ -175,7 +176,7 @@ public class ViewMembers implements IMenu {
         memberTable = new JTable();
         scrollPane1.setViewportView(memberTable);
         final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(1, 1, new Insets(10, 10, 10, 10), -1, -1));
+        panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel1.setBackground(new Color(-12828863));
         panel1.setEnabled(true);
         gbc = new GridBagConstraints();
@@ -184,8 +185,15 @@ public class ViewMembers implements IMenu {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         rootPanel.add(panel1, gbc);
+        final Spacer spacer1 = new Spacer();
+        panel1.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        configButton = new JButton();
+        configButton.setActionCommand("config");
+        configButton.setLabel("Config");
+        configButton.setText("Config");
+        panel1.add(configButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel2 = new JPanel();
-        panel2.setLayout(new GridLayoutManager(6, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel2.setLayout(new GridLayoutManager(9, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel2.setBackground(new Color(-12236470));
         panel2.setEnabled(true);
         gbc = new GridBagConstraints();
@@ -198,8 +206,8 @@ public class ViewMembers implements IMenu {
         addMemberList.setFont(new Font(addMemberList.getFont().getName(), addMemberList.getFont().getStyle(), 11));
         addMemberList.setText("Add Members from File");
         panel2.add(addMemberList, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer1 = new Spacer();
-        panel2.add(spacer1, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        panel2.add(spacer2, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         addMember = new JButton();
         addMember.setActionCommand("addMember");
         addMember.setText("Add Member");
@@ -217,6 +225,15 @@ public class ViewMembers implements IMenu {
         cameraButton.setLabel("QR Login/Logout");
         cameraButton.setText("QR Login/Logout");
         panel2.add(cameraButton, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        memberQr = new JLabel();
+        memberQr.setText("");
+        panel2.add(memberQr, new GridConstraints(8, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(100, 100), null, null, 0, false));
+        final Spacer spacer3 = new Spacer();
+        panel2.add(spacer3, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final JScrollPane scrollPane2 = new JScrollPane();
+        panel2.add(scrollPane2, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        memberDays = new JList();
+        scrollPane2.setViewportView(memberDays);
     }
 
     /**

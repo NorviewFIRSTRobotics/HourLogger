@@ -34,6 +34,7 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
     private JTextArea textarea = null;
     private JPanel rootPanel;
     private WebcamPanel webcamPanel;
+    private JTextArea textArea1;
 
     public CameraLogin() {
         super();
@@ -95,12 +96,16 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
     }
 
     private void createUIComponents() {
-        webcamPanel = new WebcamPanel(webcam);
         Dimension size = WebcamResolution.QVGA.getSize();
+        webcam = Webcam.getWebcams().get(1);
+        //Webcam.getWebcams().forEach(e -> System.out.println(e.getName()));
+        webcam.setViewSize(size);
+
+        webcamPanel = new WebcamPanel(webcam);
+
         webcamPanel.setPreferredSize(size);
         webcamPanel.setBackground(new Color(-12828863));
-        webcam = Webcam.getWebcams().get(0);
-        webcam.setViewSize(size);
+
         textarea = new JTextArea();
         textarea.setEditable(false);
         textarea.setPreferredSize(size);
@@ -126,9 +131,11 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
     private void $$$setupUI$$$() {
         createUIComponents();
         rootPanel = new JPanel();
-        rootPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        rootPanel.add(webcamPanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        rootPanel.add(textarea, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+        rootPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        webcamPanel.setDisplayDebugInfo(false);
+        rootPanel.add(webcamPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(400, 400), null, null, 0, false));
+        textArea1 = new JTextArea();
+        rootPanel.add(textArea1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
     }
 
     /**
