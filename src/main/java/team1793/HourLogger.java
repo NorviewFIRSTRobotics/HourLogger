@@ -6,8 +6,6 @@ import team1793.menu.ViewMembers;
 import team1793.utils.CSVUtils;
 
 import javax.swing.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,12 +31,6 @@ public class HourLogger {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.validate();
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent windowEvent) {
-//                memberList.stream().forEach(CSVUtils::writeMemberFile);
-            }
-        });
     }
 
     public static void setMenu(IMenu menu) {
@@ -74,4 +66,9 @@ public class HourLogger {
         Collections.sort(memberList, (m1, m2) -> m1.getFullname().compareTo(m2.getFullname()));
     }
 
+    public static void update() {
+        if(currentMenu != null) {
+            currentMenu.update();
+        }
+    }
 }

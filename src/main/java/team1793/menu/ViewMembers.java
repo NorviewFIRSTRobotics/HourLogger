@@ -141,7 +141,6 @@ public class ViewMembers implements IMenu {
     @Override
     public void update() {
         setTableData();
-
     }
 
     public void setTableData() {
