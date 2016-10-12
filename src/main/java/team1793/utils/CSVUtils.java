@@ -78,9 +78,11 @@ public class CSVUtils {
             for (int i = 1; i < csvRecords.size(); i++) {
                 CSVRecord record = csvRecords.get(i);
                 Date date = TimeUtils.fromStringToDate(record.get(DATE));
+                System.out.printf("%s,%s,%s\n",fullname,record.get(LOGIN),record.get(LOGOUT));
                 Date login = TimeUtils.fromStringToDateTime(String.format("%s %s",record.get(DATE),record.get(LOGIN)));
                 Date logout = TimeUtils.fromStringToDateTime(String.format("%s %s",record.get(DATE),record.get(LOGOUT)));
                 boolean buspass = Boolean.parseBoolean(record.get(BUSPASS));
+                System.out.printf("%s,%s,%s\n",fullname,login,logout);
                 member.addDay(login,logout, buspass);
             }
         }

@@ -54,4 +54,6 @@ public class Day {
     public String toString() {
         return getFormattedLoginTime() + "," + getFormattedLogoutTime();
     }
+
+    public boolean hasLoggedOut() { return getLoginTime() != getLogoutTime(); }
 }

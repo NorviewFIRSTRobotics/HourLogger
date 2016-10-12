@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 
 /**
@@ -13,6 +14,7 @@ public class TimeUtils {
     public final static DateFormat dateTimeFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
     public final static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
+    public static Comparator<String> compareStringDate = (date1, date2) -> (-1*fromStringToDate(date1).compareTo(fromStringToDate(date2)));
 
     private static Calendar fromDate(Date date) {
         Calendar cal = Calendar.getInstance();
@@ -80,4 +82,7 @@ public class TimeUtils {
     public static String toString(Date date) {
         return dateFormat.format(date);
     }
+
+
+
 }

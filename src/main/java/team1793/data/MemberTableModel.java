@@ -49,7 +49,7 @@ public class MemberTableModel extends AbstractTableModel {
     }
 
     public boolean isCellEditable(int var1x, int var2x) {
-        return true;
+        return false;
     }
 
     @Override

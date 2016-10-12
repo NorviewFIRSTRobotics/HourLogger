@@ -11,17 +11,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 /**
  * Created by tyler on 10/7/16.
  */
 public class Member {
-    private static final int WAIT_TIME = 15;
+    private static final int WAIT_TIME = 0;
 
     private String firstName, lastName;
     private Team team;
-    public HashMap<String, Day> days = new HashMap<>();
+    public TreeMap<String, Day> days = new TreeMap<String,Day>(TimeUtils.compareStringDate);
     private File qr;
 
     public Member(String firstName, String lastName, Team team) {
@@ -39,19 +38,16 @@ public class Member {
 
     //login or logout depending on state
     public void loginlogout() {
-        System.out.println("Attempting to login/logout");
         String date = TimeUtils.now();
         Date dateTime = TimeUtils.now(TimeUtils.dateFormat);
-        System.out.println(days);
         if (!days.containsKey(date)) {
             //sets login and logout as same time.
             int reply = JOptionPane.showConfirmDialog(null, "Do you need a bus pass?", "Bus Pass", JOptionPane.YES_NO_OPTION);
             addDay(dateTime, dateTime, reply == JOptionPane.YES_OPTION);
         } else {
-            System.out.println("logging out " + dateTime);
             Day day = days.get(date);
             // this means you have not logged out yet
-            if (day != null && day.getLoginTime() == day.getLogoutTime()) {
+            if (day != null && !day.hasLoggedOut()) {
                 //if the current time is 15 minutes after the login time
                 int diff = TimeUtils.getMinuteSum(dateTime) - day.getLoginTime();
                 if (diff >= WAIT_TIME) {
@@ -68,11 +64,9 @@ public class Member {
     }
 
     public void addDay(Date loginTime, Date logoutTime, boolean buspass) {
-        if (loginTime.compareTo(logoutTime) == 0) {
-            Day day = new Day(TimeUtils.getMinuteSum(loginTime), TimeUtils.getMinuteSum(logoutTime));
-            day.setNeedsBusPass(buspass);
-            days.put(TimeUtils.toString(loginTime), day);
-        }
+        Day day = new Day(TimeUtils.getMinuteSum(loginTime), TimeUtils.getMinuteSum(logoutTime));
+        day.setNeedsBusPass(buspass);
+        days.put(TimeUtils.toString(loginTime), day);
         save();
     }
 
@@ -83,10 +77,10 @@ public class Member {
     }
 
     public void setBusPass(String buspass) {
-        Date date = getLastDay();
-        if (date != null) {
-            days.get(date).setNeedsBusPass(buspass.equals("Yes"));
-        }
+        Day day = days.get(getNthLogin(0));
+        if(day == null)
+            return;
+        day.setNeedsBusPass(buspass.equals("Yes"));
     }
 
     public void setFirstName(String firstName) {
@@ -112,21 +106,26 @@ public class Member {
     }
 
     public List getMemberData() {
-        Date last = getLastDay();
-        String lastStr = "Never";
+        String last = getNthLogin(0) == null ? "Never": getNthLogin(0);
         String buspass = "No";
-        if (last != null) {
-            lastStr = TimeUtils.toString(last);
-            buspass = days.get(lastStr).needsBusPass() ? "Yes" : "No";
-        }
-        return Arrays.asList(new Object[]{capitalize(firstName), capitalize(lastName), capitalize(team.getName()), lastStr, buspass, getTotalMinutes()});
+        Day day = days.get(last);
+        buspass =  day != null && day.needsBusPass() ? "Yes" : "No";
+        return Arrays.asList(new Object[]{capitalize(firstName), capitalize(lastName), capitalize(team.getName()), last , buspass, getTotalMinutes()});
     }
 
-    public Date getLastDay() {
-        List<Date> dates = days.keySet().stream().map(TimeUtils::fromStringToDate).sorted((d1, d2) -> d1.compareTo(d2)).collect(Collectors.toList());
-        if (dates.size() == 0)
+    public String getNthLogin(int n) {
+        List<String> dates = new ArrayList<>(days.keySet());
+        if(dates.isEmpty())
             return null;
-        return TimeUtils.getDateOnly(dates.get(dates.size() - 1));
+        return dates.get(n);
+    }
+
+    public String getNthLogout(int n) {
+        if( n > 2 || n >= days.size()) return null;
+        Day day = days.get(getNthLogin(n));
+        if(day == null || !day.hasLoggedOut())
+            return getNthLogout(n+1);
+        return getNthLogin(n);
     }
 
     public List getFormattedDays() {

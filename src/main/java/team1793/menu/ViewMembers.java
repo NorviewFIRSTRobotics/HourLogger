@@ -14,13 +14,9 @@ import team1793.utils.CSVUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -101,35 +97,8 @@ public class ViewMembers implements IMenu {
         configButton.addActionListener(listener);
         rootPanel.validate();
 
-        memberTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent event) {
-                if (memberTable.getSelectedRow() > -1) {
-                    selectedMember = memberList.get(memberTable.getSelectedRow());
-
-                    memberDays.setListData(selectedMember.getFormattedDays().toArray());
-
-                    if (selectedMember == null)
-                        return;
-                    BufferedImage qrCode;
-                    try {
-                        qrCode = ImageIO.read(selectedMember.getQR());
-                        memberQr.setIcon(new ImageIcon(qrCode));
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-
-                } else {
-                    memberQr.setIcon(null);
-                }
-            }
-        });
-        memberQr.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent mouseEvent) {
-//                if(selectedMember != null && mouseEvent.getButton() == MouseEvent.BUTTON1)
-//                    HourLogger.print(selectedMember.getQR());
-            }
+        memberTable.getSelectionModel().addListSelectionListener(event -> {
+            updateMemberInfo();
         });
     }
 
@@ -141,8 +110,27 @@ public class ViewMembers implements IMenu {
     @Override
     public void update() {
         setTableData();
+        updateMemberInfo();
     }
+    public void updateMemberInfo() {
+        if (memberTable.getSelectedRow() > -1) {
+            selectedMember = memberList.get(memberTable.getSelectedRow());
+            memberDays.setListData(selectedMember.getFormattedDays().toArray());
+            System.out.println(selectedMember.getFormattedFullname() + ":" + selectedMember.getNthLogout(0));
+            if (selectedMember == null)
+                return;
+            BufferedImage qrCode;
+            try {
+                qrCode = ImageIO.read(selectedMember.getQR());
+                memberQr.setIcon(new ImageIcon(qrCode));
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
 
+        } else {
+            memberQr.setIcon(null);
+        }
+    }
     public void setTableData() {
         memberTable.setModel(new MemberTableModel(memberList));
     }
