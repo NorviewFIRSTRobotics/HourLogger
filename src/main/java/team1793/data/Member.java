@@ -56,6 +56,7 @@ public class Member {
                 int diff = TimeUtils.getMinuteSum(dateTime) - day.getLoginTime();
                 if (diff >= WAIT_TIME) {
                     day.setLogoutTime(TimeUtils.getMinuteSum(dateTime));
+                    JOptionPane.showMessageDialog(null, String.format("%s has successfully logged out at %s", getFormattedFullname(), day.getFormattedLogoutTime()));
                 } else {
                     JOptionPane.showMessageDialog(null, String.format("You have to wait %d more minutes to logout", WAIT_TIME - diff));
                 }
@@ -135,6 +136,9 @@ public class Member {
 
     public static BiFunction<String, String, String> toFullName = (first, last) -> String.format("%s %s", first, last);
 
+    public String getFormattedFullname() {
+        return toFullName.apply(capitalize(firstName),capitalize(lastName));
+    }
     public String getFullname() {
         return toFullName.apply(firstName, lastName);
     }
