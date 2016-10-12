@@ -97,8 +97,10 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
 
     private void createUIComponents() {
         Dimension size = WebcamResolution.QVGA.getSize();
-        webcam = Webcam.getWebcams().get(1);
-        //Webcam.getWebcams().forEach(e -> System.out.println(e.getName()));
+        for (int i = Webcam.getWebcams().size() - 1; i > 0; i--)
+            webcam = Webcam.getWebcams().get(i);
+        if (webcam == null)
+            webcam = Webcam.getDefault();
         webcam.setViewSize(size);
 
         webcamPanel = new WebcamPanel(webcam);

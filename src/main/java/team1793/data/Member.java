@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * Created by tyler on 10/7/16.
  */
 public class Member {
-    private static final int WAIT_TIME = 0;
+    private static final int WAIT_TIME = 15;
 
     private String firstName, lastName;
     private Team team;
