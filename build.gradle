@@ -12,7 +12,6 @@ repositories {
 
 }
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.3.11'
     compile 'com.github.kenglxn.QRGen:javase:2.2.0'
     compile 'org.apache.commons:commons-csv:1.4'
     compile 'com.github.sarxos:webcam-capture:0.3.10'

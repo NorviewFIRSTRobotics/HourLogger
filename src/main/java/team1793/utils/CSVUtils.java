@@ -4,9 +4,10 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import team1793.HourLogger;
 import team1793.data.Day;
 import team1793.data.Member;
-import team1793.dialog.AddMember;
+import team1793.data.Team;
 
 import java.io.File;
 import java.io.FileReader;
@@ -41,7 +42,7 @@ public class CSVUtils {
                 String name = record.get("name");
                 String team = record.get("team");
                 String[] full_name = name.split("_");
-                AddMember.addMember(full_name[0],full_name[1],team);
+                HourLogger.members.addMember(full_name[0],full_name[1],team);
             }
         }
         catch (Exception e) {
@@ -63,7 +64,7 @@ public class CSVUtils {
         String fullname = file.getName().replace(".csv","").replace("_"," ");
         String[] s = fullname.split(" ");
         String team =  s[0] != null ? s[0] : "", firstName = s[1] != null ? s[1] : "", lastName = s[2] != null ? s[2] : "";
-        Member member = new Member(firstName,lastName, Member.Team.getValue(team));
+        Member member = new Member(firstName,lastName, Team.getValue(team));
         FileReader fileReader = null;
         CSVParser csvFileParser = null;
         //Create the CSVFormat object with the header mapping
@@ -78,11 +79,9 @@ public class CSVUtils {
             for (int i = 1; i < csvRecords.size(); i++) {
                 CSVRecord record = csvRecords.get(i);
                 Date date = TimeUtils.fromStringToDate(record.get(DATE));
-                System.out.printf("%s,%s,%s\n",fullname,record.get(LOGIN),record.get(LOGOUT));
                 Date login = TimeUtils.fromStringToDateTime(String.format("%s %s",record.get(DATE),record.get(LOGIN)));
                 Date logout = TimeUtils.fromStringToDateTime(String.format("%s %s",record.get(DATE),record.get(LOGOUT)));
                 boolean buspass = Boolean.parseBoolean(record.get(BUSPASS));
-                System.out.printf("%s,%s,%s\n",fullname,login,logout);
                 member.addDay(login,logout, buspass);
             }
         }

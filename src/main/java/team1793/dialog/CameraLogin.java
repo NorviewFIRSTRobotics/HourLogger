@@ -3,23 +3,32 @@ package team1793.dialog;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
-import com.google.zxing.*;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import team1793.HourLogger;
 import team1793.data.Member;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+
+import static team1793.HourLogger.members;
 
 /**
  * Created by tyler on 10/9/16.
@@ -79,7 +88,7 @@ public class CameraLogin extends JFrame implements Runnable, ThreadFactory {
             if (result != null) {
                 textarea.setText(result.getText());
                 String[] names = result.getText().split(" ");
-                Member member = HourLogger.getMemberFromName(names[0], names[1]);
+                Member member = members.getMemberFromName(names[0], names[1]);
                 if (member != null) {
                     member.loginlogout();
                 }

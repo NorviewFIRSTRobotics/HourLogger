@@ -4,13 +4,21 @@ import team1793.Config;
 import team1793.HourLogger;
 import team1793.utils.CSVUtils;
 import team1793.utils.QRUtils;
+import team1793.utils.StringUtil;
 import team1793.utils.TimeUtils;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.function.BiFunction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.OptionalInt;
+import java.util.TreeMap;
+import java.util.Vector;
+
+import static team1793.utils.StringUtil.capitalize;
 
 /**
  * Created by tyler on 10/7/16.
@@ -71,7 +79,6 @@ public class Member {
     }
 
     private void save() {
-
         CSVUtils.writeMemberFile(this);
         HourLogger.update();
     }
@@ -133,13 +140,11 @@ public class Member {
         return days.entrySet().stream().map((e) -> "bus pass:" + e.getValue().needsBusPass() + "," + e.getKey() + ", login:" + e.getValue().getFormattedLoginTime() + ", logout:" + e.getValue().getFormattedLogoutTime() + "\n").collect(Vector::new, Vector::add, Vector::addAll);
     }
 
-    public static BiFunction<String, String, String> toFullName = (first, last) -> String.format("%s %s", first, last);
-
     public String getFormattedFullname() {
-        return toFullName.apply(capitalize(firstName),capitalize(lastName));
+        return StringUtil.concat(' ', StringUtil.StringFormat.CAPITALIZED,firstName,lastName);
     }
     public String getFullname() {
-        return toFullName.apply(firstName, lastName);
+        return StringUtil.concat(' ', StringUtil.StringFormat.LOWERCASE, firstName, lastName);
     }
 
     public File getQR() {
@@ -164,46 +169,9 @@ public class Member {
     }
 
     public boolean isName(String firstName, String lastName) {
-        return firstName.trim().toLowerCase().equals(this.firstName) && lastName.trim().toLowerCase().equals(this.lastName);
+        return firstName.trim().equalsIgnoreCase(this.firstName) && lastName.trim().equalsIgnoreCase(this.lastName);
     }
-
-    public enum Team {
-        PROGRAMMING("Programming"),
-        MECHANICAL("Mechanical"),
-        ELECTRICAL("Electrical"),
-        SHOP("Shop"),
-        MISSION("Mission"),
-        DESIGN("Design"),
-        UNKNOWN("Unknown");
-        private String name;
-
-        Team(String name) {
-            this.name = name;
-        }
-
-        public static Team[] VALUES = values();
-
-        public static Team getValue(String name) {
-            name = capitalize(name);
-            for (Team team : VALUES)
-                if (name.equals(team.getName()))
-                    return team;
-            return UNKNOWN;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-    }
-
-    public static String capitalize(String name) {
-        if (name != null && name.length() != 0) {
-            char[] chars = name.toCharArray();
-            chars[0] = Character.toUpperCase(chars[0]);
-            return new String(chars);
-        } else {
-            return name;
-        }
+    public boolean isName(String fullName) {
+        return fullName.equalsIgnoreCase(this.getFullname());
     }
 }

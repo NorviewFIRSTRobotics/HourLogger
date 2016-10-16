@@ -13,38 +13,65 @@ import team1793.dialog.RemoveMember;
 import team1793.utils.CSVUtils;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import static team1793.HourLogger.memberList;
+import static team1793.HourLogger.frame;
+import static team1793.HourLogger.members;
 
 /**
  * Created by tyler on 10/8/16.
  */
 public class ViewMembers implements IMenu {
     private JPanel rootPanel;
+    private JMenuBar menuBar;
+    private JMenuItem addMember;
+    private JMenuItem addMemberList;
+    private JMenuItem removeMember;
+    private JMenuItem loginButton;
+    private JMenuItem cameraButton;
+//    private JMenuItem configButton;
 
-    private JButton addMember;
-    private JButton addMemberList;
-    private JButton removeMember;
-    private JButton loginButton;
-    private JButton cameraButton;
 
     private JTable memberTable;
-    private JButton configButton;
     private JLabel memberQr;
     private JList memberDays;
     private Member selectedMember;
 
     public ViewMembers() {
         $$$setupUI$$$();
+        menuBar = new JMenuBar();
+        JMenu memberMenu = new JMenu("Member");
+        memberMenu.add(addMember = new JMenuItem("Add Member"));
+        memberMenu.add(addMemberList = new JMenuItem("Add Member List"));
+        memberMenu.add(removeMember = new JMenuItem("Remove Member"));
+        JMenu loginMenu = new JMenu("Login/Logout");
+        loginMenu.add(loginButton = new JMenuItem("Manual Login"));
+        loginMenu.add(cameraButton = new JMenuItem("Camera Login"));
+        menuBar.add(memberMenu);
+        menuBar.add(loginMenu);
+        frame.setJMenuBar(menuBar);
+        members.addListener(this::setTableData);
         update();
         ActionListener listener = e -> {
             String c = e.getActionCommand();
@@ -53,11 +80,9 @@ public class ViewMembers implements IMenu {
                     new AddMember();
                     break;
                 case "removeMember":
-                    int[] rows = memberTable.getSelectedRows();
-                    new RemoveMember(IntStream.range(0, rows.length).mapToObj(i -> memberList.get(i)).collect(Collectors.toList()), this);
-
+                    new RemoveMember();
                     break;
-                case "addMany":
+                case "addMemberList":
                     JFileChooser chooser = new JFileChooser();
                     FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files", "csv");
                     chooser.setFileFilter(filter);
@@ -69,10 +94,10 @@ public class ViewMembers implements IMenu {
                                 chooser.getSelectedFile().getName());
                     }
                     break;
-                case "login":
+                case "loginButton":
                     new LoginMember();
                     break;
-                case "cameraLogin":
+                case "cameraButton":
                     new CameraLogin();
                     break;
                 case "config":
@@ -88,13 +113,17 @@ public class ViewMembers implements IMenu {
                     break;
             }
         };
+        addMember.setActionCommand("addMember");
+        removeMember.setActionCommand("removeMember");
+        addMemberList.setActionCommand("addMemberList");
+        loginButton.setActionCommand("loginButton");
+        cameraButton.setActionCommand("cameraButton");
 
         addMember.addActionListener(listener);
         removeMember.addActionListener(listener);
         addMemberList.addActionListener(listener);
         loginButton.addActionListener(listener);
         cameraButton.addActionListener(listener);
-        configButton.addActionListener(listener);
         rootPanel.validate();
 
         memberTable.getSelectionModel().addListSelectionListener(event -> {
@@ -112,9 +141,10 @@ public class ViewMembers implements IMenu {
         setTableData();
         updateMemberInfo();
     }
+
     public void updateMemberInfo() {
         if (memberTable.getSelectedRow() > -1) {
-            selectedMember = memberList.get(memberTable.getSelectedRow());
+            selectedMember = members.getMember(memberTable.getSelectedRow());
             memberDays.setListData(selectedMember.getFormattedDays().toArray());
             System.out.println(selectedMember.getFormattedFullname() + ":" + selectedMember.getNthLogout(0));
             if (selectedMember == null)
@@ -126,15 +156,12 @@ public class ViewMembers implements IMenu {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-
-        } else {
-            memberQr.setIcon(null);
         }
     }
-    public void setTableData() {
-        memberTable.setModel(new MemberTableModel(memberList));
-    }
 
+    public void setTableData() {
+        memberTable.setModel(new MemberTableModel());
+    }
     /**
      * Method generated by IntelliJ IDEA GUI Designer
      * >>> IMPORTANT!! <<<
@@ -154,7 +181,7 @@ public class ViewMembers implements IMenu {
         GridBagConstraints gbc;
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
@@ -163,64 +190,23 @@ public class ViewMembers implements IMenu {
         memberTable = new JTable();
         scrollPane1.setViewportView(memberTable);
         final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        panel1.setBackground(new Color(-12828863));
+        panel1.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.setBackground(new Color(-12236470));
         panel1.setEnabled(true);
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         rootPanel.add(panel1, gbc);
-        final Spacer spacer1 = new Spacer();
-        panel1.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        configButton = new JButton();
-        configButton.setActionCommand("config");
-        configButton.setLabel("Config");
-        configButton.setText("Config");
-        panel1.add(configButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JPanel panel2 = new JPanel();
-        panel2.setLayout(new GridLayoutManager(9, 1, new Insets(0, 0, 0, 0), -1, -1));
-        panel2.setBackground(new Color(-12236470));
-        panel2.setEnabled(true);
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        rootPanel.add(panel2, gbc);
-        addMemberList = new JButton();
-        addMemberList.setActionCommand("addMany");
-        addMemberList.setFont(new Font(addMemberList.getFont().getName(), addMemberList.getFont().getStyle(), 11));
-        addMemberList.setText("Add Members from File");
-        panel2.add(addMemberList, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer2 = new Spacer();
-        panel2.add(spacer2, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        addMember = new JButton();
-        addMember.setActionCommand("addMember");
-        addMember.setText("Add Member");
-        panel2.add(addMember, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        removeMember = new JButton();
-        removeMember.setActionCommand("removeMember");
-        removeMember.setText("Remove Member");
-        panel2.add(removeMember, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        loginButton = new JButton();
-        loginButton.setActionCommand("login");
-        loginButton.setText("Manual Login/Logout");
-        panel2.add(loginButton, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        cameraButton = new JButton();
-        cameraButton.setActionCommand("cameraLogin");
-        cameraButton.setLabel("QR Login/Logout");
-        cameraButton.setText("QR Login/Logout");
-        panel2.add(cameraButton, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         memberQr = new JLabel();
         memberQr.setText("");
-        panel2.add(memberQr, new GridConstraints(8, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(100, 100), null, null, 0, false));
-        final Spacer spacer3 = new Spacer();
-        panel2.add(spacer3, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        panel1.add(memberQr, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(100, 100), null, null, 0, false));
         final JScrollPane scrollPane2 = new JScrollPane();
-        panel2.add(scrollPane2, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        panel1.add(scrollPane2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         memberDays = new JList();
         scrollPane2.setViewportView(memberDays);
+        final Spacer spacer1 = new Spacer();
+        panel1.add(spacer1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
     }
 
     /**
