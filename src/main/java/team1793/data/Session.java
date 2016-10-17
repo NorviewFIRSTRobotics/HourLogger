@@ -3,11 +3,11 @@ package team1793.data;
 /**
  * Created by tyler on 10/8/16.
  */
-public class Day {
+public class Session {
 
     private int loginTime, logoutTime;
     private boolean needsBusPass;
-    public Day(int loginTime, int logoutTime) {
+    public Session(int loginTime, int logoutTime) {
         this.loginTime = loginTime;
         this.logoutTime = logoutTime;
     }

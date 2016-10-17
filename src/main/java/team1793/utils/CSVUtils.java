@@ -5,7 +5,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import team1793.HourLogger;
-import team1793.data.Day;
+import team1793.data.Session;
 import team1793.data.Member;
 import team1793.data.Team;
 
@@ -114,12 +114,12 @@ public class CSVUtils {
             csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
             //Create CSV file header
             csvFilePrinter.printRecord((Object[]) HEADER);
-            for(Map.Entry<String,Day> entry: member.days.entrySet()) {
+            for(Map.Entry<String,Session> entry: member.days.entrySet()) {
                 String date = entry.getKey();
-                Day day = entry.getValue();
-                String login = day.getFormattedLoginTime();
-                String logout = day.getFormattedLogoutTime();
-                csvFilePrinter.printRecord(date, login,logout,day.needsBusPass());
+                Session session = entry.getValue();
+                String login = session.getFormattedLoginTime();
+                String logout = session.getFormattedLogoutTime();
+                csvFilePrinter.printRecord(date, login,logout, session.needsBusPass());
             }
             System.out.println("CSV file was created successfully !!!");
         } catch (Exception e) {

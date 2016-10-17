@@ -28,7 +28,7 @@ public class Member {
 
     private String firstName, lastName;
     private Team team;
-    public TreeMap<String, Day> days = new TreeMap<String,Day>(TimeUtils.compareStringDate);
+    public TreeMap<String, Session> days = new TreeMap<String,Session>(TimeUtils.compareStringDate);
     private File qr;
 
     public Member(String firstName, String lastName, Team team) {
@@ -53,28 +53,28 @@ public class Member {
             int reply = JOptionPane.showConfirmDialog(null, "Do you need a bus pass?", "Bus Pass", JOptionPane.YES_NO_OPTION);
             addDay(dateTime, dateTime, reply == JOptionPane.YES_OPTION);
         } else {
-            Day day = days.get(date);
+            Session session = days.get(date);
             // this means you have not logged out yet
-            if (day != null && !day.hasLoggedOut()) {
+            if (session != null && !session.hasLoggedOut()) {
                 //if the current time is 15 minutes after the login time
-                int diff = TimeUtils.getMinuteSum(dateTime) - day.getLoginTime();
+                int diff = TimeUtils.getMinuteSum(dateTime) - session.getLoginTime();
                 if (diff >= WAIT_TIME) {
-                    day.setLogoutTime(TimeUtils.getMinuteSum(dateTime));
-                    JOptionPane.showMessageDialog(null, String.format("%s has successfully logged out at %s", getFormattedFullname(), day.getFormattedLogoutTime()));
+                    session.setLogoutTime(TimeUtils.getMinuteSum(dateTime));
+                    JOptionPane.showMessageDialog(null, String.format("%s has successfully logged out at %s", getFormattedFullname(), session.getFormattedLogoutTime()));
                 } else {
                     JOptionPane.showMessageDialog(null, String.format("You have to wait %d more minutes to logout", WAIT_TIME - diff));
                 }
             } else {
-                JOptionPane.showMessageDialog(null, String.format("You already logged out today at %s!", day.getFormattedLogoutTime()));
+                JOptionPane.showMessageDialog(null, String.format("You already logged out today at %s!", session.getFormattedLogoutTime()));
             }
         }
         save();
     }
 
     public void addDay(Date loginTime, Date logoutTime, boolean buspass) {
-        Day day = new Day(TimeUtils.getMinuteSum(loginTime), TimeUtils.getMinuteSum(logoutTime));
-        day.setNeedsBusPass(buspass);
-        days.put(TimeUtils.toString(loginTime), day);
+        Session session = new Session(TimeUtils.getMinuteSum(loginTime), TimeUtils.getMinuteSum(logoutTime));
+        session.setNeedsBusPass(buspass);
+        days.put(TimeUtils.toString(loginTime), session);
         save();
     }
 
@@ -84,10 +84,10 @@ public class Member {
     }
 
     public void setBusPass(String buspass) {
-        Day day = days.get(getNthLogin(0));
-        if(day == null)
+        Session session = days.get(getNthLogin(0));
+        if(session == null)
             return;
-        day.setNeedsBusPass(buspass.equals("Yes"));
+        session.setNeedsBusPass(buspass.equals("Yes"));
     }
 
     public void setFirstName(String firstName) {
@@ -115,8 +115,8 @@ public class Member {
     public List getMemberData() {
         String last = getNthLogin(0) == null ? "Never": getNthLogin(0);
         String buspass = "No";
-        Day day = days.get(last);
-        buspass =  day != null && day.needsBusPass() ? "Yes" : "No";
+        Session session = days.get(last);
+        buspass =  session != null && session.needsBusPass() ? "Yes" : "No";
         return Arrays.asList(new Object[]{capitalize(firstName), capitalize(lastName), capitalize(team.getName()), last , buspass, getTotalMinutes()});
     }
 
@@ -129,8 +129,8 @@ public class Member {
 
     public String getNthLogout(int n) {
         if( n > 2 || n >= days.size()) return null;
-        Day day = days.get(getNthLogin(n));
-        if(day == null || !day.hasLoggedOut())
+        Session session = days.get(getNthLogin(n));
+        if(session == null || !session.hasLoggedOut())
             return getNthLogout(n+1);
         return getNthLogin(n);
     }
@@ -152,7 +152,7 @@ public class Member {
     }
 
     public int getTotalMinutes() {
-        OptionalInt total = days.values().stream().mapToInt(Day::getTimeLoggedIn).reduce((sum, n) -> sum + n);
+        OptionalInt total = days.values().stream().mapToInt(Session::getTimeLoggedIn).reduce((sum, n) -> sum + n);
         if (total.isPresent())
             return total.getAsInt();
         return 0;
