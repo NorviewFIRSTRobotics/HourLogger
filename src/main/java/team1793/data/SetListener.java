@@ -9,6 +9,6 @@ import java.util.EventListener;
  * @version 10/16/16
  */
 public interface SetListener extends EventListener {
-    public void contentsChanged();
+    public void contentsChanged(MemberSet memberSet);
 }
 

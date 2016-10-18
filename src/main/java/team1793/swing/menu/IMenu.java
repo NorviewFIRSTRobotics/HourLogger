@@ -1,4 +1,4 @@
-package team1793.menu;
+package team1793.swing.menu;
 
 import java.awt.Container;
 

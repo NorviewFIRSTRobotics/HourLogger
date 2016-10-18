@@ -89,7 +89,7 @@ public class MemberSet extends TreeSet<Member> {
         return super.remove(o);
     }
     public void triggerEvent() {
-        eventListeners.forEach(eventListener -> eventListener.contentsChanged());
+        eventListeners.forEach(eventListener -> eventListener.contentsChanged(this));
     }
 
     public void addListener(SetListener listener) {

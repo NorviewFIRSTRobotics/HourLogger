@@ -1,4 +1,4 @@
-package team1793.dialog;
+package team1793.swing.dialog;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;

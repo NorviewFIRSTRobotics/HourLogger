@@ -1,7 +1,9 @@
 package team1793.data;
 
+import javax.swing.JComboBox;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Vector;
 
 /**
  * Purpose:
@@ -32,7 +34,10 @@ public enum Team {
         else
             return UNKNOWN;
     }
-
+    public static JComboBox<String> getComboBox() {
+        Vector<String> vector = Arrays.stream(Team.VALUES).map(Team::getName).collect(Vector::new, Vector::add,Vector::addAll);
+        return new JComboBox(vector);
+    }
     public String getName() {
         return name;
     }

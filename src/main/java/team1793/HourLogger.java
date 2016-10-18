@@ -1,8 +1,8 @@
 package team1793;
 
 import team1793.data.MemberSet;
-import team1793.menu.IMenu;
-import team1793.menu.ViewMembers;
+import team1793.swing.menu.IMenu;
+import team1793.swing.menu.ViewMembers;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;

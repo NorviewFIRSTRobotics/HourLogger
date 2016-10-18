@@ -1,4 +1,4 @@
-package team1793.dialog;
+package team1793.swing.dialog;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;

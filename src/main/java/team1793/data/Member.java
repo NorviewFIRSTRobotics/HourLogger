@@ -10,32 +10,26 @@ import team1793.utils.TimeUtils;
 import javax.swing.JOptionPane;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.OptionalInt;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.Vector;
-
-import static team1793.utils.StringUtil.capitalize;
 
 /**
  * Created by tyler on 10/7/16.
  */
 public class Member {
-    private static final int WAIT_TIME = 0;
-
-    private String firstName, lastName;
-    private Team team;
-    public TreeMap<String, Session> days = new TreeMap<String,Session>(TimeUtils.compareStringDate);
+    private static final int WAIT_TIME = 15;
+    private String firstName, lastName, team;
+    public TreeMap<String, Session> sessions = new TreeMap<String,Session>(TimeUtils.compareStringDate);
     private File qr;
 
     public Member(String firstName, String lastName, Team team) {
         this.firstName = firstName.toLowerCase();
         this.lastName = lastName.toLowerCase();
-        this.team = team;
-
+        this.team = team.getName();
         if (!getSaveFile().exists()) try {
             getSaveFile().createNewFile();
         } catch (IOException e) {
@@ -48,12 +42,12 @@ public class Member {
     public void loginlogout() {
         String date = TimeUtils.now();
         Date dateTime = TimeUtils.now(TimeUtils.dateFormat);
-        if (!days.containsKey(date)) {
+        if (!sessions.containsKey(date)) {
             //sets login and logout as same time.
             int reply = JOptionPane.showConfirmDialog(null, "Do you need a bus pass?", "Bus Pass", JOptionPane.YES_NO_OPTION);
             addDay(dateTime, dateTime, reply == JOptionPane.YES_OPTION);
         } else {
-            Session session = days.get(date);
+            Session session = sessions.get(date);
             // this means you have not logged out yet
             if (session != null && !session.hasLoggedOut()) {
                 //if the current time is 15 minutes after the login time
@@ -70,11 +64,36 @@ public class Member {
         }
         save();
     }
+    public String yesno(boolean b) {
+        return b ? "Yes": "No";
+    }
+    public String needBuspass() {
 
+        String date = TimeUtils.toString(TimeUtils.now(TimeUtils.dateFormat));
+        Optional<Session> s = Optional.ofNullable(sessions.get(date));
+        if(s.isPresent())
+            return yesno(s.get().needsBusPass());
+        return yesno(false);
+    }
+    public void setInfo(Object o, int r) {
+        switch(r) {
+            case 2:
+                getSaveFile().delete();
+                this.team = (String) o;
+                save();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public List getInfo() {
+        return Arrays.asList(new Object[]{StringUtil.capitalize(firstName),StringUtil.capitalize(lastName), StringUtil.capitalize(team), needBuspass()});
+    }
     public void addDay(Date loginTime, Date logoutTime, boolean buspass) {
         Session session = new Session(TimeUtils.getMinuteSum(loginTime), TimeUtils.getMinuteSum(logoutTime));
         session.setNeedsBusPass(buspass);
-        days.put(TimeUtils.toString(loginTime), session);
+        sessions.put(TimeUtils.toString(loginTime), session);
         save();
     }
 
@@ -83,61 +102,8 @@ public class Member {
         HourLogger.update();
     }
 
-    public void setBusPass(String buspass) {
-        Session session = days.get(getNthLogin(0));
-        if(session == null)
-            return;
-        session.setNeedsBusPass(buspass.equals("Yes"));
-    }
-
-    public void setFirstName(String firstName) {
-        Team team = this.team;
-        getSaveFile().delete();
-        this.team = team;
-        this.firstName = firstName;
-        save();
-    }
-
-    public void setLastName(String lastName) {
-        Team team = this.team;
-        getSaveFile().delete();
-        this.team = team;
-        this.lastName = lastName;
-        save();
-    }
-
-    public void setTeam(Team team) {
-        getSaveFile().delete();
-        this.team = team;
-        save();
-    }
-
-    public List getMemberData() {
-        String last = getNthLogin(0) == null ? "Never": getNthLogin(0);
-        String buspass = "No";
-        Session session = days.get(last);
-        buspass =  session != null && session.needsBusPass() ? "Yes" : "No";
-        return Arrays.asList(new Object[]{capitalize(firstName), capitalize(lastName), capitalize(team.getName()), last , buspass, getTotalMinutes()});
-    }
-
-    public String getNthLogin(int n) {
-        List<String> dates = new ArrayList<>(days.keySet());
-        if(dates.isEmpty())
-            return null;
-        return dates.get(n);
-    }
-
-    public String getNthLogout(int n) {
-        if( n > 2 || n >= days.size()) return null;
-        Session session = days.get(getNthLogin(n));
-        if(session == null || !session.hasLoggedOut())
-            return getNthLogout(n+1);
-        return getNthLogin(n);
-    }
-
     public List getFormattedDays() {
-        //noinspection unchecked
-        return days.entrySet().stream().map((e) -> "bus pass:" + e.getValue().needsBusPass() + "," + e.getKey() + ", login:" + e.getValue().getFormattedLoginTime() + ", logout:" + e.getValue().getFormattedLogoutTime() + "\n").collect(Vector::new, Vector::add, Vector::addAll);
+        return sessions.entrySet().stream().map((e) -> "bus pass:" + e.getValue().needsBusPass() + "," + e.getKey() + ", login:" + e.getValue().getFormattedLoginTime() + ", logout:" + e.getValue().getFormattedLogoutTime() + "\n").collect(Vector::new, Vector::add, Vector::addAll);
     }
 
     public String getFormattedFullname() {
@@ -151,15 +117,8 @@ public class Member {
         return qr;
     }
 
-    public int getTotalMinutes() {
-        OptionalInt total = days.values().stream().mapToInt(Session::getTimeLoggedIn).reduce((sum, n) -> sum + n);
-        if (total.isPresent())
-            return total.getAsInt();
-        return 0;
-    }
-
     public File getSaveFile() {
-        String name = this.team.getName().toLowerCase() + "_" + getFullname().replace(" ", "_") + ".csv";
+        String name = this.team.toLowerCase() + "_" + getFullname().replace(" ", "_") + ".csv";
         return new File(Config.saveDir, name);
     }
 

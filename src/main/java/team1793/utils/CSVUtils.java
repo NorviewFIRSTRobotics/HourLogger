@@ -114,7 +114,7 @@ public class CSVUtils {
             csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
             //Create CSV file header
             csvFilePrinter.printRecord((Object[]) HEADER);
-            for(Map.Entry<String,Session> entry: member.days.entrySet()) {
+            for(Map.Entry<String,Session> entry: member.sessions.entrySet()) {
                 String date = entry.getKey();
                 Session session = entry.getValue();
                 String login = session.getFormattedLoginTime();
