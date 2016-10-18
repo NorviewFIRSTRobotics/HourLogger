@@ -159,7 +159,6 @@ public class ViewMembers implements IMenu {
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
         memberTable = new MemberTable(members);
         clockLabel = new ClockLabel("date-time");
     }

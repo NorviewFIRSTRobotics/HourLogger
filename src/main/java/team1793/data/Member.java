@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -88,7 +89,7 @@ public class Member {
     }
 
     public List getInfo() {
-        return Arrays.asList(new Object[]{StringUtil.capitalize(firstName),StringUtil.capitalize(lastName), StringUtil.capitalize(team), needBuspass()});
+        return Arrays.asList(new Object[]{StringUtil.capitalize(firstName),StringUtil.capitalize(lastName), StringUtil.capitalize(team), needBuspass(), getMinutesToday(),getTotalMinutes()});
     }
     public void addDay(Date loginTime, Date logoutTime, boolean buspass) {
         Session session = new Session(TimeUtils.getMinuteSum(loginTime), TimeUtils.getMinuteSum(logoutTime));
@@ -120,6 +121,20 @@ public class Member {
     public File getSaveFile() {
         String name = this.team.toLowerCase() + "_" + getFullname().replace(" ", "_") + ".csv";
         return new File(Config.saveDir, name);
+    }
+
+    public int getMinutesToday() {
+        String date = TimeUtils.toString(TimeUtils.now(TimeUtils.dateFormat));
+        Optional<Session> s = Optional.ofNullable(sessions.get(date));
+        if(s.isPresent())
+            return s.get().getTimeLoggedIn();
+        return 0;
+    }
+    public int getTotalMinutes() {
+        OptionalInt total = sessions.values().stream().mapToInt(Session::getTimeLoggedIn).reduce((sum, n) -> sum + n);
+        if(total.isPresent())
+            return total.getAsInt();
+        return 0;
     }
 
     @Override
