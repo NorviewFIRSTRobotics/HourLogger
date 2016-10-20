@@ -24,6 +24,7 @@ public class HourLogger {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.validate();
+        frame.setExtendedState( frame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
         URL url = HourLogger.class.getResource("/pilots-logo.png");
         frame.setIconImage(new ImageIcon(url).getImage());
     }

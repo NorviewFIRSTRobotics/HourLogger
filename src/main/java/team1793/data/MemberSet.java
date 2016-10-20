@@ -68,17 +68,26 @@ public class MemberSet extends TreeSet<Member> {
     }
 
     public Member getMember(int i) {
-        return (Member) toArray()[i];
+        Object[] array = toArray();
+        if(array.length > i)
+            return (Member) array[i];
+        return null;
     }
 
     public void loadFromFiles(File loadDirectory) {
-        Arrays.stream(loadDirectory.listFiles()).filter(f -> !f.isDirectory()).map(f -> CSVUtils.readMemberFile(f)).collect(Collectors.toCollection(() -> this));
+        if(!loadDirectory.exists())
+            loadDirectory.mkdirs();
+        if(loadDirectory.listFiles() == null)
+            return;
+        Arrays.stream(loadDirectory.listFiles()).filter(f -> !f.isDirectory() && f != null).map(f -> CSVUtils.readMemberFile(f)).collect(Collectors.toCollection(() -> this));
     }
 
     @Override
     public boolean add(Member member) {
-        triggerEvent();
-        return super.add(member);
+        boolean add = super.add(member);
+        if(add)
+            triggerEvent();
+        return add;
     }
 
     @Override

@@ -1,8 +1,10 @@
 package team1793.swing;
 
+import team1793.data.Member;
 import team1793.data.MemberSet;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.Optional;
 
 /**
  * Purpose:
@@ -25,11 +27,6 @@ public class MemberTableModel extends AbstractTableModel {
     }
 
     @Override
-    public Class<?> getColumnClass(int c) {
-        return getValueAt(0,c).getClass();
-    }
-
-    @Override
     public String getColumnName(int i) {
         return headers[i];
     }
@@ -46,7 +43,10 @@ public class MemberTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int r, int c) {
-        return members.getMember(r).getInfo().get(c);
+        Optional<Member> member = Optional.ofNullable(members.getMember(r));
+        if(member.isPresent())
+            return members.getMember(r).getInfo().get(c);
+        return null;
     }
 
     @Override

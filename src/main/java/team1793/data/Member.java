@@ -21,7 +21,7 @@ import java.util.Vector;
 /**
  * Created by tyler on 10/7/16.
  */
-public class Member {
+public class Member implements Comparable<Member> {
     private static final int WAIT_TIME = 15;
     private String firstName, lastName, team;
     public TreeMap<String, Session> sessions = new TreeMap<String,Session>(TimeUtils.compareStringDate);
@@ -147,5 +147,12 @@ public class Member {
     }
     public boolean isName(String fullName) {
         return fullName.equalsIgnoreCase(this.getFullname());
+    }
+
+    @Override
+    public int compareTo(Member member) {
+        if(member == null)
+            return 0;
+        return this.getFullname().compareTo(member.getFullname());
     }
 }
