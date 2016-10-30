@@ -26,6 +26,11 @@ public class Member implements Comparable<Member> {
     private String firstName, lastName, team;
     public TreeMap<String, Session> sessions = new TreeMap<String,Session>(TimeUtils.compareStringDate);
     private File qr;
+    private MemberSet set;
+
+    public void setSet(MemberSet set) {
+        this.set = set;
+    }
 
     public Member(String firstName, String lastName, Team team) {
         this.firstName = firstName.toLowerCase();
@@ -52,9 +57,10 @@ public class Member implements Comparable<Member> {
             // this means you have not logged out yet
             if (session != null && !session.hasLoggedOut()) {
                 //if the current time is 15 minutes after the login time
-                int diff = TimeUtils.getMinuteSum(dateTime) - session.getLoginTime();
+                int cheat_time = 20;
+                int diff = TimeUtils.getMinuteSum(dateTime) - session.getLoginTime() + cheat_time;
                 if (diff >= WAIT_TIME) {
-                    session.setLogoutTime(TimeUtils.getMinuteSum(dateTime));
+                    session.setLogoutTime(TimeUtils.getMinuteSum(dateTime)+ cheat_time);
                     JOptionPane.showMessageDialog(null, String.format("%s has successfully logged out at %s", getFormattedFullname(), session.getFormattedLogoutTime()));
                 } else {
                     JOptionPane.showMessageDialog(null, String.format("You have to wait %d more minutes to logout", WAIT_TIME - diff));
@@ -69,7 +75,6 @@ public class Member implements Comparable<Member> {
         return b ? "Yes": "No";
     }
     public String needBuspass() {
-
         String date = TimeUtils.toString(TimeUtils.now(TimeUtils.dateFormat));
         Optional<Session> s = Optional.ofNullable(sessions.get(date));
         if(s.isPresent())
@@ -99,7 +104,9 @@ public class Member implements Comparable<Member> {
     }
 
     private void save() {
+
         CSVUtils.writeMemberFile(this);
+        set.triggerEvent();
         HourLogger.update();
     }
 

@@ -13,7 +13,7 @@ import java.util.Optional;
  * @version 10/17/16
  */
 public class MemberTableModel extends AbstractTableModel {
-    private String[] headers = new String[]{"First Name","Last Name","Team","Bus Pass", "Minutes Today", "Total Minutes"};
+    private String[] headers = new String[]{"First Name","Last Name","SubTeam","Bus Pass", "Minutes Today", "Total Minutes"};
     private MemberSet members;
     public MemberTableModel(MemberSet members) {
         super();

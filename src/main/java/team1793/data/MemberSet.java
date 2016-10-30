@@ -85,6 +85,7 @@ public class MemberSet extends TreeSet<Member> {
     @Override
     public boolean add(Member member) {
         boolean add = super.add(member);
+        member.setSet(this);
         if(add)
             triggerEvent();
         return add;

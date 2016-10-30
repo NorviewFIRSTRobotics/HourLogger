@@ -119,7 +119,7 @@
             <properties>
               <enabled value="true"/>
               <foreground color="-1"/>
-              <text value="Team"/>
+              <text value="SubTeam"/>
             </properties>
           </component>
         </children>
