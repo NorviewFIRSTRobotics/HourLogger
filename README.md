@@ -1,4 +1,5 @@
 ### Hour Logger -- A way to keep track of time 
+##Winner of the Congressional App Challenge for Virginia’s Third Congressional District. 
 
 ### Purpose
 The purpose of this application is to create an easy way to streamline the logging of hours members of my school FRC Robotics Team were at meetings.
