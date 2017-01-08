@@ -1,30 +1,53 @@
-group 'team1793'
-version '1.6'
+buildscript {
+    ext.kotlin_version = '1.0.4'
 
-apply plugin: 'java'
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+plugins {
+    id 'edu.sc.seis.launch4j' version '2.1.0'
+}
 
-sourceCompatibility = 1.8
+apply plugin: "kotlin"
+
 
 repositories {
+    mavenLocal()
     mavenCentral()
-    maven { url "https://jitpack.io" }
     maven { url "https://oss.sonatype.org"}
-
+    maven { url "https://jitpack.io" }
 }
+
+apply plugin: 'application'
+
 dependencies {
-    compile 'com.github.kenglxn.QRGen:javase:2.2.0'
+    compile 'no.tornado:tornadofx:1.5.8'
     compile 'org.apache.commons:commons-csv:1.4'
     compile 'com.github.sarxos:webcam-capture:0.3.10'
     compile group: 'com.google.zxing', name: 'core', version: '2.0'
-    compile 'com.intellij:forms_rt:7.0.3'
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'com.github.kenglxn.QRGen:javase:2.2.0'
+    testCompile 'junit:junit:4.12'
 }
-
+mainClassName= 'team1793.HourLogger'
 jar {
+
+    baseName = 'HourLogger-Standard-Edition'
+    version = '2.0'
     manifest {
-        attributes "Main-Class": "team1793.HourLogger"
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'team1793.HourLoggerApp'
+        )
     }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+    from configurations.compile.collect { entry -> zipTree(entry) }
+}
+launch4j {
+    outfile = 'TestMain.exe'
+    mainClassName= 'team1793.HourLogger'
+    icon = 'icons/myApp.ico'
 }
