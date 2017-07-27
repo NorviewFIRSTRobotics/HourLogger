@@ -15,7 +15,6 @@ plugins {
 
 apply plugin: "kotlin"
 
-
 repositories {
     mavenLocal()
     mavenCentral()
@@ -44,6 +43,7 @@ jar {
                 'Main-Class': 'team1793.HourLoggerApp'
         )
     }
+
     from configurations.compile.collect { entry -> zipTree(entry) }
 }
 launch4j {
